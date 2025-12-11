@@ -1,0 +1,50 @@
+# ---- basic setup ----
+savedir: "./"
+name: "run"
+training_mode: "exploration"
+dataset: null
+dataset_train: "train"
+dataset_test: "test"
+train_path: null
+test_path: null
+preprocess_skip: false
+
+# ---- obs names ----
+celltype_name_train: "cell_type"
+celltype_name_test: "cell_type"
+
+# ---- dataset control ----
+remove_celltype: false
+remove_celltype_type: "most"
+uncontrolled: false
+no_gt: false
+sampling_cells: null
+sampling_genes: null
+sampling_cells_method: "prop"
+select: null
+rm_ref: false
+
+# ---- training hyperparameters ----
+rounds: 10
+seed: 42
+epochs: 50
+lr: 0.0001
+wd: 0.05
+batch_size: 500
+k_neighbors: 10
+
+# ---- model hyperparameters ----
+gamma: 1.4 # coefficient for meta-consistency loss
+alpha: 1 # coefficient for recontruction loss
+beta: 0.1 # coefficient for MMF loss
+mmf_k: 200
+mmf_margin: 16
+k: 100
+sigma: 1.0
+dbscan: 150
+gmm_ncomponent: 8
+
+# ---- model architecture ----
+latent_dim: 64
+hidden_dims: [128, 128]
+dropout: 0

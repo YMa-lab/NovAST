@@ -12,6 +12,8 @@ preprocess_skip: false
 # ---- obs names ----
 celltype_name_train: "cell_type"
 celltype_name_test: "cell_type"
+region_name_train: None
+region_name_test: None
 
 # ---- dataset control ----
 remove_celltype: false
@@ -48,3 +50,6 @@ gmm_ncomponent: 8
 latent_dim: 64
 hidden_dims: [128, 128]
 dropout: 0
+
+# --- plotting ---
+spot_size: 5

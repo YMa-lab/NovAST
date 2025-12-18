@@ -1,0 +1,1 @@
+We deposited the [mouse MERFISH primary moter (MOp) cortex dataset] (https://www.nature.com/articles/s41586-021-03705-x), with the original data available at the [Brain Image Library](https://doi.brainimagelibrary.org/doi/10.35077/g.21). We converted the data into AnnData (`.h5ad`) format.

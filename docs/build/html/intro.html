@@ -1,0 +1,176 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction to NovAST &mdash; NovAST 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="NovAST Tutorial on Exploration Mode" href="demo_exploration.html" />
+    <link rel="prev" title="NovAST Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            NovAST
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction to NovAST</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#demo">Demo</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demo_exploration.html">NovAST Tutorial on Exploration Mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_evaluation.html">NovAST Tutorial on Evaluation Mode</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">NovAST</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Introduction to NovAST</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/intro.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction-to-novast">
+<h1>Introduction to NovAST<a class="headerlink" href="#introduction-to-novast" title="Link to this heading"></a></h1>
+<p>NovAST is a deep-learning framework for automated label transfer and novel cell type discovery in spatial transcriptomics.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Here is the sample command to install packages into a python environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># clone the code from GitHub</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">YMa</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">NovAST</span><span class="o">.</span><span class="n">git</span>
+<span class="c1"># create a new environemnbt with python==3.11</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">NovAST_env</span>
+<span class="c1"># activate the python environemtn </span>
+<span class="n">source</span> <span class="n">NovAST_env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="c1"># install the package</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">.</span>
+</pre></div>
+</div>
+</section>
+<section id="quickstart">
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h2>
+<p>NovAST requires both <strong>reference</strong> and <strong>target</strong> datasets in <strong>AnnData (.h5ad)</strong> format.
+We need to first set up some basic path :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">savedir</span><span class="p">:</span> <span class="s2">&quot;./&quot;</span>
+<span class="n">train_path</span><span class="o">=</span><span class="s2">&quot;path_to_train_dataset.h5ad&quot;</span>
+<span class="n">test_path</span><span class="o">=</span><span class="s2">&quot;path_to_train_dataset.h5ad&quot;</span>
+<span class="n">training_mode</span> <span class="o">=</span> <span class="s2">&quot;exploration&quot;</span>
+
+<span class="c1"># Column name in the reference AnnData that stores cell-type annotations</span>
+<span class="n">celltype_name_train</span> <span class="o">=</span> <span class="s2">&quot;cell_type&quot;</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;demo_exploration&quot;</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="s2">&quot;Xenium_IPF_lung&quot;</span>
+</pre></div>
+</div>
+<p>All remaining hyperparameters are defined in the file <strong><code class="docutils literal notranslate"><span class="pre">default_config.yaml</span></code></strong>.<br />
+Users may override any of them directly when calling <code class="docutils literal notranslate"><span class="pre">run_NovAST()</span></code> if customization is needed.</p>
+<p>You can now run NovAST using the specified settings as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">args</span> <span class="o">=</span> <span class="n">run_NovAST</span><span class="p">(</span>
+    <span class="n">training_mode</span><span class="o">=</span><span class="n">training_mode</span><span class="p">,</span>
+    <span class="n">train_path</span><span class="o">=</span><span class="n">train_path</span><span class="p">,</span>
+    <span class="n">test_path</span><span class="o">=</span><span class="n">test_path</span><span class="p">,</span>
+    <span class="n">celltype_name_train</span><span class="o">=</span><span class="n">celltype_name_train</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+    <span class="n">rounds</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>For each training round, the pipeline saves all outputs to the specified directory, with each random seed assigned its own subfolder. This includes the trained model, the Stage-1 loss values, and a final result file named <strong><code class="docutils literal notranslate"><span class="pre">adata_unlabeled_final.h5ad</span></code></strong>, which stores the latent embeddings in <strong><code class="docutils literal notranslate"><span class="pre">.obsm['X_latent']</span></code></strong> and the final predicted labels in <strong><code class="docutils literal notranslate"><span class="pre">.obs['voted_final_prediction']</span></code></strong>.</p>
+<p>Running the following line of code will generate UMAP visualizations as well as spatial plots of the predicted cell types and their associated confidence scores, and save them to each individual seed’s output directory.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NovAST_plot</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="demo">
+<h2>Demo<a class="headerlink" href="#demo" title="Link to this heading"></a></h2>
+<p>NovAST provides two operation modes:</p>
+<ul class="simple">
+<li><p><strong>Exploration mode</strong> — recommended for applying NovAST on new datasets <strong>without ground-truth labels</strong> in the target dataset.</p></li>
+<li><p><strong>Evaluation mode</strong> — reproduces the benchmarking pipeline used in the manuscript (requires ground-truth labels).</p></li>
+</ul>
+<p>Below, we provide separate, step-by-step demos illustrating the workflow and expected outputs for each mode.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="NovAST Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="demo_exploration.html" class="btn btn-neutral float-right" title="NovAST Tutorial on Exploration Mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yu Zhu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

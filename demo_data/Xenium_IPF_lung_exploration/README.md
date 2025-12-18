@@ -1,0 +1,1 @@
+We deposited datasets from a healthy donor (VUHD116) and a patient with idiopathic pulmonary fibrosis (IPF; VUILD107), as described in the associated [paper](https://www.nature.com/articles/s41588-025-02080-x) and based on the corresponding [original dataset](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE250346). We converted the data into AnnData (`.h5ad`). 

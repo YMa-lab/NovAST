@@ -1,0 +1,1871 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NovAST Tutorial on Evaluation Mode &mdash; NovAST 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="NovAST Tutorial on Exploration Mode" href="demo_exploration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            NovAST
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to NovAST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_exploration.html">NovAST Tutorial on Exploration Mode</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">NovAST Tutorial on Evaluation Mode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#No-pseudo-novel-setting">No pseudo-novel setting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#1.-Import-NovAST-Functions">1. Import NovAST Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#2.-Data-Preparation">2. Data Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#3.-Required-Arguments">3. Required Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#4.-Run-NovAST">4. Run NovAST</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#5.-Visualize-the-output">5. Visualize the output</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Pseudo-novel-setting">Pseudo-novel setting</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">NovAST</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">NovAST Tutorial on Evaluation Mode</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/demo_evaluation.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="NovAST-Tutorial-on-Evaluation-Mode">
+<h1>NovAST Tutorial on Evaluation Mode<a class="headerlink" href="#NovAST-Tutorial-on-Evaluation-Mode" title="Link to this heading"></a></h1>
+<p>In the manuscript, we systematically benchmarked NovAST against the state-of-the-art SOTA methods, using a pseudo-novel strategy, where one cell type is removed from the reference and treated as the ground truth novel population. Evaluation metrics are calculated by comparing the annotation results with the known ground-truth cell type labels. We provide a demo of this <strong>evaluation mode</strong> using the [mouse MERFISH primary moter (MOp) cortex dataset]
+(<a class="reference external" href="https://www.nature.com/articles/s41586-021-03705-x">https://www.nature.com/articles/s41586-021-03705-x</a>), with the original data available at the <a class="reference external" href="https://doi.brainimagelibrary.org/doi/10.35077/g.21">Brain Image Library</a>. We converted the data into AnnData (<code class="docutils literal notranslate"><span class="pre">.h5ad</span></code>) format and stored in the <code class="docutils literal notranslate"><span class="pre">demo_data/MERFISH_MOp_evaluation</span></code> directory in this <a class="reference external" href="https://github.com/YMa-lab/NovAST/">GitHub repository</a>. We use half of the slices as reference and the other half as target.</p>
+<section id="Introduction">
+<h2>Introduction<a class="headerlink" href="#Introduction" title="Link to this heading"></a></h2>
+<p>We illustrate the <strong>evaluation mode</strong> under two scenarios:</p>
+<ol class="arabic simple">
+<li><p><strong>No pseudo-novel setting</strong>, where no cell types are removed from the reference.</p></li>
+<li><p><strong>Pseudo-novel setting</strong>, where the most abundant cell type(s) are removed from the reference and treated as novel cell populations.</p></li>
+</ol>
+<p>To enable evaluation, users need to provide an additional argument, <code class="docutils literal notranslate"><span class="pre">celltype_name_train</span></code>, which specifies the column storing the ground-truth cell type labels.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">NovAST_evaluation</span></code> is enabled, NovAST will compute and report four evaluation metrics—<strong>Accuracy</strong>, <strong>ARI</strong>, <strong>Macro F1</strong>, and <strong>Weighted F1</strong>—in addition to generating UMAP representations and spatial visualizations.</p>
+</section>
+<section id="No-pseudo-novel-setting">
+<h2>No pseudo-novel setting<a class="headerlink" href="#No-pseudo-novel-setting" title="Link to this heading"></a></h2>
+<section id="1.-Import-NovAST-Functions">
+<h3>1. Import NovAST Functions<a class="headerlink" href="#1.-Import-NovAST-Functions" title="Link to this heading"></a></h3>
+<p>After installing the package, import the required functions from NovAST for subsequent use.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">NovAST</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_NovAST</span><span class="p">,</span> <span class="n">NovAST_plot</span><span class="p">,</span> <span class="n">NovAST_evaluation</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.-Data-Preparation">
+<h3>2. Data Preparation<a class="headerlink" href="#2.-Data-Preparation" title="Link to this heading"></a></h3>
+<p>NovAST requires both <strong>reference</strong> and <strong>target</strong> datasets in <strong>AnnData (.h5ad)</strong> format. Specify the dataset paths below for subsequent loading.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train_path</span><span class="o">=</span><span class="s2">&quot;merfish_split1.h5ad&quot;</span>
+<span class="n">test_path</span><span class="o">=</span><span class="s2">&quot;merfish_split2.h5ad&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>Next, we set NovAST to <strong>evaluation mode</strong> by specifying the columns that store the cell type labels for both the reference and target datasets. If multiple slices are available, it is also recommended to specify the column containing slice information, which enables visualization for individual slices.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">training_mode</span> <span class="o">=</span> <span class="s2">&quot;evaluation&quot;</span>
+
+<span class="c1"># Column name in the reference and target AnnData that stores cell-type annotations</span>
+<span class="n">celltype_name_train</span><span class="o">=</span><span class="s2">&quot;cell_type&quot;</span>
+<span class="n">celltype_name_test</span><span class="o">=</span><span class="s2">&quot;cell_type&quot;</span>
+
+<span class="c1"># Column name in the target AnnData that stores slice metadata</span>
+<span class="n">region_name_test</span><span class="o">=</span><span class="s1">&#39;slice&#39;</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="3.-Required-Arguments">
+<h3>3. Required Arguments<a class="headerlink" href="#3.-Required-Arguments" title="Link to this heading"></a></h3>
+<p>The following parameters <strong>must</strong> be specified when running NovAST:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Name of the output directory where results will be saved</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;demo_evaluation_noremoval&quot;</span>
+
+<span class="c1"># A user-defined dataset identifier used for organizing output files</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="s2">&quot;MERFISH_MOp&quot;</span>
+
+<span class="c1"># Saving directory</span>
+<span class="n">savedir</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">All remaining hyperparameters are defined in the file <strong>``default_config.yaml``</strong>.</div>
+<div class="line">Users may override any of them directly when calling <code class="docutils literal notranslate"><span class="pre">run_NovAST()</span></code> if customization is needed.</div>
+</div>
+</section>
+<section id="4.-Run-NovAST">
+<h3>4. Run NovAST<a class="headerlink" href="#4.-Run-NovAST" title="Link to this heading"></a></h3>
+<p>You can now run NovAST using the specified settings as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">args</span> <span class="o">=</span> <span class="n">run_NovAST</span><span class="p">(</span>
+    <span class="n">training_mode</span><span class="o">=</span><span class="n">training_mode</span><span class="p">,</span>
+    <span class="n">train_path</span><span class="o">=</span><span class="n">train_path</span><span class="p">,</span>
+    <span class="n">test_path</span><span class="o">=</span><span class="n">test_path</span><span class="p">,</span>
+    <span class="n">celltype_name_train</span><span class="o">=</span><span class="n">celltype_name_train</span><span class="p">,</span>
+    <span class="n">celltype_name_test</span><span class="o">=</span><span class="n">celltype_name_test</span><span class="p">,</span>
+    <span class="n">region_name_test</span><span class="o">=</span><span class="n">region_name_test</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+    <span class="n">spot_size</span><span class="o">=</span><span class="mi">22</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Random seed set as 42
+The saving directory set to ./demo_evaluation_noremoval
+Number of overlapped genes: 254
+Datasets have been preprocessed!
+──────────────────────────────────────────
+Starting training for seed 1...
+Random seed set as 2
+Part I training started! Round 1
+[Epoch 0] Total: 6.122377 | Recon: 2.067116 | Sim: 2.550922 | MMF: 4.839701
+[Epoch 1] Total: 5.368202 | Recon: 1.740998 | Sim: 2.370187 | MMF: 3.089426
+[Epoch 2] Total: 5.128153 | Recon: 1.603111 | Sim: 2.332447 | MMF: 2.596154
+[Epoch 3] Total: 4.981821 | Recon: 1.520940 | Sim: 2.313645 | MMF: 2.217771
+[Epoch 4] Total: 4.885262 | Recon: 1.471172 | Sim: 2.294748 | MMF: 2.014420
+[Epoch 5] Total: 4.788348 | Recon: 1.437240 | Sim: 2.257177 | MMF: 1.910612
+[Epoch 6] Total: 4.696454 | Recon: 1.411070 | Sim: 2.216955 | MMF: 1.816462
+[Epoch 7] Total: 4.635001 | Recon: 1.389697 | Sim: 2.199887 | MMF: 1.654623
+[Epoch 8] Total: 4.598732 | Recon: 1.377426 | Sim: 2.189172 | MMF: 1.564648
+[Epoch 9] Total: 4.573420 | Recon: 1.368273 | Sim: 2.183382 | MMF: 1.484121
+[Epoch 10] Total: 4.553995 | Recon: 1.363499 | Sim: 2.177274 | MMF: 1.423123
+[Epoch 11] Total: 4.537841 | Recon: 1.362051 | Sim: 2.171876 | MMF: 1.351644
+[Epoch 12] Total: 4.529717 | Recon: 1.361644 | Sim: 2.170031 | MMF: 1.300306
+[Epoch 13] Total: 4.520651 | Recon: 1.362190 | Sim: 2.165262 | MMF: 1.270939
+[Epoch 14] Total: 4.513139 | Recon: 1.365347 | Sim: 2.162318 | MMF: 1.205467
+[Epoch 15] Total: 4.509767 | Recon: 1.368579 | Sim: 2.158214 | MMF: 1.196884
+[Epoch 16] Total: 4.505986 | Recon: 1.372277 | Sim: 2.155752 | MMF: 1.156571
+[Epoch 17] Total: 4.505145 | Recon: 1.377601 | Sim: 2.153570 | MMF: 1.125460
+[Epoch 18] Total: 4.498136 | Recon: 1.381888 | Sim: 2.151746 | MMF: 1.038040
+[Epoch 19] Total: 4.498013 | Recon: 1.386046 | Sim: 2.148944 | MMF: 1.034461
+[Epoch 20] Total: 4.501860 | Recon: 1.393055 | Sim: 2.147206 | MMF: 1.027162
+[Epoch 21] Total: 4.504953 | Recon: 1.398927 | Sim: 2.144694 | MMF: 1.034539
+[Epoch 22] Total: 4.502501 | Recon: 1.405445 | Sim: 2.143656 | MMF: 0.959380
+[Epoch 23] Total: 4.504518 | Recon: 1.410191 | Sim: 2.140717 | MMF: 0.973228
+[Epoch 24] Total: 4.506236 | Recon: 1.417453 | Sim: 2.139427 | MMF: 0.935858
+[Epoch 25] Total: 4.509432 | Recon: 1.423767 | Sim: 2.137967 | MMF: 0.925114
+[Epoch 26] Total: 4.511779 | Recon: 1.430746 | Sim: 2.136834 | MMF: 0.894657
+[Epoch 27] Total: 4.514370 | Recon: 1.438136 | Sim: 2.134955 | MMF: 0.872964
+[Epoch 28] Total: 4.521346 | Recon: 1.445435 | Sim: 2.134406 | MMF: 0.877424
+[Epoch 29] Total: 4.525909 | Recon: 1.453116 | Sim: 2.134148 | MMF: 0.849854
+[Epoch 30] Total: 4.525812 | Recon: 1.460950 | Sim: 2.132326 | MMF: 0.796049
+[Epoch 31] Total: 4.536850 | Recon: 1.468877 | Sim: 2.131825 | MMF: 0.834184
+[Epoch 32] Total: 4.543143 | Recon: 1.476904 | Sim: 2.131574 | MMF: 0.820356
+[Epoch 33] Total: 4.545500 | Recon: 1.485055 | Sim: 2.129683 | MMF: 0.788897
+[Epoch 34] Total: 4.549729 | Recon: 1.492701 | Sim: 2.129767 | MMF: 0.753538
+[Epoch 35] Total: 4.555686 | Recon: 1.501049 | Sim: 2.128037 | MMF: 0.753857
+[Epoch 36] Total: 4.560589 | Recon: 1.509464 | Sim: 2.127804 | MMF: 0.721988
+[Epoch 37] Total: 4.568789 | Recon: 1.517892 | Sim: 2.128588 | MMF: 0.708739
+[Epoch 38] Total: 4.573899 | Recon: 1.527946 | Sim: 2.126962 | MMF: 0.682064
+[Epoch 39] Total: 4.582001 | Recon: 1.535219 | Sim: 2.125716 | MMF: 0.707790
+[Epoch 40] Total: 4.590275 | Recon: 1.545558 | Sim: 2.125597 | MMF: 0.688815
+[Epoch 41] Total: 4.596739 | Recon: 1.554684 | Sim: 2.125628 | MMF: 0.661755
+[Epoch 42] Total: 4.607126 | Recon: 1.564372 | Sim: 2.125389 | MMF: 0.672084
+[Epoch 43] Total: 4.607857 | Recon: 1.574253 | Sim: 2.123778 | MMF: 0.603140
+[Epoch 44] Total: 4.616489 | Recon: 1.583970 | Sim: 2.124183 | MMF: 0.586620
+[Epoch 45] Total: 4.620828 | Recon: 1.593493 | Sim: 2.122585 | MMF: 0.557161
+[Epoch 46] Total: 4.627292 | Recon: 1.603371 | Sim: 2.121984 | MMF: 0.531433
+[Epoch 47] Total: 4.639272 | Recon: 1.613591 | Sim: 2.122581 | MMF: 0.540681
+[Epoch 48] Total: 4.646663 | Recon: 1.624029 | Sim: 2.121005 | MMF: 0.532275
+[Epoch 49] Total: 4.658750 | Recon: 1.633576 | Sim: 2.121766 | MMF: 0.547024
+Part I training done
+--- 408.8008723258972 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/oscar/home/yzhu194/stellar_py/lib/python3.11/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+2025-12-17 14:18:38.925994: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-17 14:18:40.800236: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+UMAPing takes 447.3444950580597 seconds
+Labelspreading takes 65.36459469795227 seconds
+Part II training done
+--- 595.5656564235687 seconds ---
+──────────────────────────────────────────
+Starting training for seed 2...
+Random seed set as 3
+Part I training started! Round 2
+[Epoch 0] Total: 6.249813 | Recon: 2.071046 | Sim: 2.591330 | MMF: 5.509050
+[Epoch 1] Total: 5.411429 | Recon: 1.739151 | Sim: 2.375921 | MMF: 3.459893
+[Epoch 2] Total: 5.140010 | Recon: 1.603698 | Sim: 2.337354 | MMF: 2.640163
+[Epoch 3] Total: 4.991720 | Recon: 1.518287 | Sim: 2.316063 | MMF: 2.309445
+[Epoch 4] Total: 4.874147 | Recon: 1.466185 | Sim: 2.289563 | MMF: 2.025735
+[Epoch 5] Total: 4.761879 | Recon: 1.432187 | Sim: 2.239397 | MMF: 1.945362
+[Epoch 6] Total: 4.687064 | Recon: 1.405430 | Sim: 2.217625 | MMF: 1.769589
+[Epoch 7] Total: 4.641750 | Recon: 1.386495 | Sim: 2.206692 | MMF: 1.658856
+[Epoch 8] Total: 4.603283 | Recon: 1.372888 | Sim: 2.196986 | MMF: 1.546144
+[Epoch 9] Total: 4.576019 | Recon: 1.363758 | Sim: 2.191534 | MMF: 1.441137
+[Epoch 10] Total: 4.556455 | Recon: 1.359714 | Sim: 2.184015 | MMF: 1.391191
+[Epoch 11] Total: 4.543546 | Recon: 1.358363 | Sim: 2.179533 | MMF: 1.338370
+[Epoch 12] Total: 4.524632 | Recon: 1.357999 | Sim: 2.170342 | MMF: 1.281545
+[Epoch 13] Total: 4.518728 | Recon: 1.360277 | Sim: 2.166246 | MMF: 1.257072
+[Epoch 14] Total: 4.510263 | Recon: 1.363306 | Sim: 2.161431 | MMF: 1.209534
+[Epoch 15] Total: 4.507329 | Recon: 1.367473 | Sim: 2.157544 | MMF: 1.192944
+[Epoch 16] Total: 4.501274 | Recon: 1.371691 | Sim: 2.154667 | MMF: 1.130488
+[Epoch 17] Total: 4.499100 | Recon: 1.375975 | Sim: 2.152056 | MMF: 1.102464
+[Epoch 18] Total: 4.497572 | Recon: 1.381554 | Sim: 2.149264 | MMF: 1.070484
+[Epoch 19] Total: 4.494117 | Recon: 1.385660 | Sim: 2.146595 | MMF: 1.032254
+[Epoch 20] Total: 4.496377 | Recon: 1.391952 | Sim: 2.144893 | MMF: 1.015743
+[Epoch 21] Total: 4.496813 | Recon: 1.398986 | Sim: 2.142185 | MMF: 0.987686
+[Epoch 22] Total: 4.499253 | Recon: 1.403988 | Sim: 2.142055 | MMF: 0.963881
+[Epoch 23] Total: 4.502758 | Recon: 1.410801 | Sim: 2.139682 | MMF: 0.964022
+[Epoch 24] Total: 4.503673 | Recon: 1.417044 | Sim: 2.137794 | MMF: 0.937182
+[Epoch 25] Total: 4.509064 | Recon: 1.424874 | Sim: 2.136587 | MMF: 0.929692
+[Epoch 26] Total: 4.513984 | Recon: 1.430793 | Sim: 2.137237 | MMF: 0.910589
+[Epoch 27] Total: 4.511989 | Recon: 1.437861 | Sim: 2.133847 | MMF: 0.867415
+[Epoch 28] Total: 4.519597 | Recon: 1.445597 | Sim: 2.133497 | MMF: 0.871046
+[Epoch 29] Total: 4.523630 | Recon: 1.452778 | Sim: 2.132338 | MMF: 0.855779
+[Epoch 30] Total: 4.529494 | Recon: 1.460945 | Sim: 2.131943 | MMF: 0.838299
+[Epoch 31] Total: 4.532794 | Recon: 1.468711 | Sim: 2.131801 | MMF: 0.795621
+[Epoch 32] Total: 4.534332 | Recon: 1.475576 | Sim: 2.130289 | MMF: 0.763516
+[Epoch 33] Total: 4.543133 | Recon: 1.484728 | Sim: 2.129244 | MMF: 0.774632
+[Epoch 34] Total: 4.550635 | Recon: 1.492968 | Sim: 2.129038 | MMF: 0.770140
+[Epoch 35] Total: 4.555419 | Recon: 1.501595 | Sim: 2.127980 | MMF: 0.746532
+[Epoch 36] Total: 4.557264 | Recon: 1.508856 | Sim: 2.127132 | MMF: 0.704226
+[Epoch 37] Total: 4.567486 | Recon: 1.518980 | Sim: 2.126139 | MMF: 0.719112
+[Epoch 38] Total: 4.574602 | Recon: 1.527996 | Sim: 2.125949 | MMF: 0.702770
+[Epoch 39] Total: 4.582667 | Recon: 1.537224 | Sim: 2.125306 | MMF: 0.700144
+[Epoch 40] Total: 4.588124 | Recon: 1.544184 | Sim: 2.125071 | MMF: 0.688399
+[Epoch 41] Total: 4.593238 | Recon: 1.555725 | Sim: 2.124414 | MMF: 0.633331
+[Epoch 42] Total: 4.601316 | Recon: 1.563371 | Sim: 2.125119 | MMF: 0.627786
+[Epoch 43] Total: 4.607911 | Recon: 1.573661 | Sim: 2.123634 | MMF: 0.611624
+[Epoch 44] Total: 4.611602 | Recon: 1.582686 | Sim: 2.123344 | MMF: 0.562334
+[Epoch 45] Total: 4.621340 | Recon: 1.593144 | Sim: 2.123269 | MMF: 0.556205
+[Epoch 46] Total: 4.630561 | Recon: 1.603458 | Sim: 2.121731 | MMF: 0.566794
+[Epoch 47] Total: 4.637939 | Recon: 1.612590 | Sim: 2.121831 | MMF: 0.547862
+[Epoch 48] Total: 4.644781 | Recon: 1.623226 | Sim: 2.120888 | MMF: 0.523111
+[Epoch 49] Total: 4.654356 | Recon: 1.634808 | Sim: 2.121040 | MMF: 0.500912
+Part I training done
+--- 405.8083803653717 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 404.3266661167145 seconds
+Labelspreading takes 68.5263319015503 seconds
+Part II training done
+--- 605.0975677967072 seconds ---
+──────────────────────────────────────────
+Starting training for seed 3...
+Random seed set as 4
+Part I training started! Round 3
+[Epoch 0] Total: 6.107305 | Recon: 2.049519 | Sim: 2.536035 | MMF: 5.073372
+[Epoch 1] Total: 5.368517 | Recon: 1.728326 | Sim: 2.370366 | MMF: 3.216789
+[Epoch 2] Total: 5.101047 | Recon: 1.592790 | Sim: 2.324390 | MMF: 2.541110
+[Epoch 3] Total: 4.939517 | Recon: 1.511975 | Sim: 2.287629 | MMF: 2.248619
+[Epoch 4] Total: 4.819418 | Recon: 1.461650 | Sim: 2.252977 | MMF: 2.036012
+[Epoch 5] Total: 4.722676 | Recon: 1.424906 | Sim: 2.224217 | MMF: 1.838674
+[Epoch 6] Total: 4.657262 | Recon: 1.398373 | Sim: 2.208031 | MMF: 1.676451
+[Epoch 7] Total: 4.617192 | Recon: 1.379999 | Sim: 2.196463 | MMF: 1.621440
+[Epoch 8] Total: 4.586383 | Recon: 1.368569 | Sim: 2.189243 | MMF: 1.528738
+[Epoch 9] Total: 4.560048 | Recon: 1.362175 | Sim: 2.182495 | MMF: 1.423795
+[Epoch 10] Total: 4.542931 | Recon: 1.359110 | Sim: 2.177246 | MMF: 1.356765
+[Epoch 11] Total: 4.527882 | Recon: 1.357353 | Sim: 2.171718 | MMF: 1.301236
+[Epoch 12] Total: 4.520638 | Recon: 1.358426 | Sim: 2.168502 | MMF: 1.263083
+[Epoch 13] Total: 4.512421 | Recon: 1.359748 | Sim: 2.164197 | MMF: 1.227976
+[Epoch 14] Total: 4.510108 | Recon: 1.363207 | Sim: 2.160977 | MMF: 1.215323
+[Epoch 15] Total: 4.499604 | Recon: 1.366257 | Sim: 2.157443 | MMF: 1.129267
+[Epoch 16] Total: 4.500148 | Recon: 1.371754 | Sim: 2.155982 | MMF: 1.100194
+[Epoch 17] Total: 4.497879 | Recon: 1.375977 | Sim: 2.151816 | MMF: 1.093596
+[Epoch 18] Total: 4.498193 | Recon: 1.380746 | Sim: 2.149735 | MMF: 1.078175
+[Epoch 19] Total: 4.498870 | Recon: 1.386355 | Sim: 2.148161 | MMF: 1.050904
+[Epoch 20] Total: 4.495297 | Recon: 1.391206 | Sim: 2.146119 | MMF: 0.995235
+[Epoch 21] Total: 4.493752 | Recon: 1.397348 | Sim: 2.142643 | MMF: 0.967037
+[Epoch 22] Total: 4.502996 | Recon: 1.404580 | Sim: 2.143442 | MMF: 0.975979
+[Epoch 23] Total: 4.504298 | Recon: 1.410459 | Sim: 2.140955 | MMF: 0.965016
+[Epoch 24] Total: 4.507377 | Recon: 1.417352 | Sim: 2.140424 | MMF: 0.934321
+[Epoch 25] Total: 4.509275 | Recon: 1.423998 | Sim: 2.137893 | MMF: 0.922274
+[Epoch 26] Total: 4.513133 | Recon: 1.430931 | Sim: 2.136872 | MMF: 0.905817
+[Epoch 27] Total: 4.517219 | Recon: 1.438173 | Sim: 2.134612 | MMF: 0.905905
+[Epoch 28] Total: 4.522095 | Recon: 1.444828 | Sim: 2.134845 | MMF: 0.884842
+[Epoch 29] Total: 4.525523 | Recon: 1.453281 | Sim: 2.134255 | MMF: 0.842857
+[Epoch 30] Total: 4.529139 | Recon: 1.460843 | Sim: 2.132484 | MMF: 0.828180
+[Epoch 31] Total: 4.535018 | Recon: 1.469009 | Sim: 2.131272 | MMF: 0.822272
+[Epoch 32] Total: 4.543804 | Recon: 1.477197 | Sim: 2.130332 | MMF: 0.841421
+[Epoch 33] Total: 4.543818 | Recon: 1.483930 | Sim: 2.129926 | MMF: 0.779914
+[Epoch 34] Total: 4.548989 | Recon: 1.492132 | Sim: 2.129194 | MMF: 0.759869
+[Epoch 35] Total: 4.554983 | Recon: 1.501541 | Sim: 2.128330 | MMF: 0.737794
+[Epoch 36] Total: 4.558756 | Recon: 1.509410 | Sim: 2.127492 | MMF: 0.708573
+[Epoch 37] Total: 4.568500 | Recon: 1.519156 | Sim: 2.128052 | MMF: 0.700711
+[Epoch 38] Total: 4.574239 | Recon: 1.526434 | Sim: 2.127092 | MMF: 0.698773
+[Epoch 39] Total: 4.580926 | Recon: 1.537001 | Sim: 2.125774 | MMF: 0.678419
+[Epoch 40] Total: 4.591244 | Recon: 1.546444 | Sim: 2.125128 | MMF: 0.696209
+[Epoch 41] Total: 4.595596 | Recon: 1.554917 | Sim: 2.124331 | MMF: 0.666148
+[Epoch 42] Total: 4.602612 | Recon: 1.564268 | Sim: 2.124652 | MMF: 0.638313
+[Epoch 43] Total: 4.607940 | Recon: 1.573690 | Sim: 2.123826 | MMF: 0.608935
+[Epoch 44] Total: 4.613609 | Recon: 1.582801 | Sim: 2.123000 | MMF: 0.586077
+[Epoch 45] Total: 4.623394 | Recon: 1.593306 | Sim: 2.122967 | MMF: 0.579345
+[Epoch 46] Total: 4.629820 | Recon: 1.602377 | Sim: 2.122504 | MMF: 0.559367
+[Epoch 47] Total: 4.638482 | Recon: 1.612955 | Sim: 2.121350 | MMF: 0.556371
+[Epoch 48] Total: 4.648189 | Recon: 1.625039 | Sim: 2.121615 | MMF: 0.528891
+[Epoch 49] Total: 4.653639 | Recon: 1.633155 | Sim: 2.120785 | MMF: 0.513851
+Part I training done
+--- 365.0442838668823 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 391.9681375026703 seconds
+Labelspreading takes 66.13743853569031 seconds
+Part II training done
+--- 574.3633198738098 seconds ---
+──────────────────────────────────────────
+Starting training for seed 4...
+Random seed set as 5
+Part I training started! Round 4
+[Epoch 0] Total: 6.216073 | Recon: 2.051866 | Sim: 2.591716 | MMF: 5.358054
+[Epoch 1] Total: 5.429814 | Recon: 1.732640 | Sim: 2.396053 | MMF: 3.426994
+[Epoch 2] Total: 5.135140 | Recon: 1.595300 | Sim: 2.336972 | MMF: 2.680801
+[Epoch 3] Total: 4.970292 | Recon: 1.514182 | Sim: 2.306410 | MMF: 2.271352
+[Epoch 4] Total: 4.832670 | Recon: 1.461640 | Sim: 2.259283 | MMF: 2.080339
+[Epoch 5] Total: 4.738217 | Recon: 1.423599 | Sim: 2.228017 | MMF: 1.953938
+[Epoch 6] Total: 4.672937 | Recon: 1.397948 | Sim: 2.212200 | MMF: 1.779097
+[Epoch 7] Total: 4.627663 | Recon: 1.380746 | Sim: 2.198781 | MMF: 1.686231
+[Epoch 8] Total: 4.590263 | Recon: 1.369427 | Sim: 2.190463 | MMF: 1.541868
+[Epoch 9] Total: 4.567800 | Recon: 1.363996 | Sim: 2.183194 | MMF: 1.473336
+[Epoch 10] Total: 4.550289 | Recon: 1.359569 | Sim: 2.177613 | MMF: 1.420614
+[Epoch 11] Total: 4.532418 | Recon: 1.358810 | Sim: 2.172257 | MMF: 1.324477
+[Epoch 12] Total: 4.527801 | Recon: 1.359046 | Sim: 2.168474 | MMF: 1.328922
+[Epoch 13] Total: 4.514986 | Recon: 1.361168 | Sim: 2.164349 | MMF: 1.237299
+[Epoch 14] Total: 4.508097 | Recon: 1.363816 | Sim: 2.161571 | MMF: 1.180827
+[Epoch 15] Total: 4.506552 | Recon: 1.366169 | Sim: 2.157836 | MMF: 1.194128
+[Epoch 16] Total: 4.506160 | Recon: 1.371286 | Sim: 2.157216 | MMF: 1.147708
+[Epoch 17] Total: 4.497355 | Recon: 1.374896 | Sim: 2.154818 | MMF: 1.057134
+[Epoch 18] Total: 4.500206 | Recon: 1.380433 | Sim: 2.151101 | MMF: 1.082312
+[Epoch 19] Total: 4.495432 | Recon: 1.384871 | Sim: 2.148917 | MMF: 1.020764
+[Epoch 20] Total: 4.501826 | Recon: 1.391389 | Sim: 2.146717 | MMF: 1.050321
+[Epoch 21] Total: 4.503271 | Recon: 1.397512 | Sim: 2.144670 | MMF: 1.032212
+[Epoch 22] Total: 4.504422 | Recon: 1.402628 | Sim: 2.143521 | MMF: 1.008640
+[Epoch 23] Total: 4.505836 | Recon: 1.409224 | Sim: 2.142274 | MMF: 0.974285
+[Epoch 24] Total: 4.506903 | Recon: 1.416289 | Sim: 2.139682 | MMF: 0.950585
+[Epoch 25] Total: 4.511126 | Recon: 1.423138 | Sim: 2.138698 | MMF: 0.938098
+[Epoch 26] Total: 4.512894 | Recon: 1.429904 | Sim: 2.137512 | MMF: 0.904727
+[Epoch 27] Total: 4.520018 | Recon: 1.437563 | Sim: 2.136056 | MMF: 0.919763
+[Epoch 28] Total: 4.521132 | Recon: 1.444688 | Sim: 2.135522 | MMF: 0.867141
+[Epoch 29] Total: 4.528325 | Recon: 1.452869 | Sim: 2.133872 | MMF: 0.880351
+[Epoch 30] Total: 4.533538 | Recon: 1.460124 | Sim: 2.133675 | MMF: 0.862694
+[Epoch 31] Total: 4.535609 | Recon: 1.467662 | Sim: 2.133394 | MMF: 0.811945
+[Epoch 32] Total: 4.543984 | Recon: 1.475533 | Sim: 2.132048 | MMF: 0.835828
+[Epoch 33] Total: 4.547736 | Recon: 1.483644 | Sim: 2.131302 | MMF: 0.802692
+[Epoch 34] Total: 4.552299 | Recon: 1.491784 | Sim: 2.131027 | MMF: 0.770773
+[Epoch 35] Total: 4.556849 | Recon: 1.500584 | Sim: 2.128817 | MMF: 0.759220
+[Epoch 36] Total: 4.565673 | Recon: 1.509031 | Sim: 2.128575 | MMF: 0.766372
+[Epoch 37] Total: 4.570611 | Recon: 1.518295 | Sim: 2.127986 | MMF: 0.731354
+[Epoch 38] Total: 4.577437 | Recon: 1.526825 | Sim: 2.127695 | MMF: 0.718397
+[Epoch 39] Total: 4.584835 | Recon: 1.536583 | Sim: 2.126719 | MMF: 0.708445
+[Epoch 40] Total: 4.588836 | Recon: 1.544824 | Sim: 2.125333 | MMF: 0.685453
+[Epoch 41] Total: 4.594663 | Recon: 1.554817 | Sim: 2.125096 | MMF: 0.647105
+[Epoch 42] Total: 4.603427 | Recon: 1.563485 | Sim: 2.124932 | MMF: 0.650368
+[Epoch 43] Total: 4.607308 | Recon: 1.573684 | Sim: 2.123824 | MMF: 0.602705
+[Epoch 44] Total: 4.615460 | Recon: 1.582475 | Sim: 2.123961 | MMF: 0.594396
+[Epoch 45] Total: 4.630482 | Recon: 1.592744 | Sim: 2.123568 | MMF: 0.647429
+[Epoch 46] Total: 4.636138 | Recon: 1.602279 | Sim: 2.122600 | MMF: 0.622191
+[Epoch 47] Total: 4.639943 | Recon: 1.612571 | Sim: 2.122722 | MMF: 0.555606
+[Epoch 48] Total: 4.653861 | Recon: 1.624062 | Sim: 2.121683 | MMF: 0.594430
+[Epoch 49] Total: 4.659319 | Recon: 1.632941 | Sim: 2.122226 | MMF: 0.552627
+Part I training done
+--- 392.8876540660858 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 433.59117126464844 seconds
+Labelspreading takes 64.22960495948792 seconds
+Part II training done
+--- 585.1247413158417 seconds ---
+──────────────────────────────────────────
+Starting training for seed 5...
+Random seed set as 6
+Part I training started! Round 5
+[Epoch 0] Total: 6.323102 | Recon: 2.077985 | Sim: 2.628057 | MMF: 5.658365
+[Epoch 1] Total: 5.496901 | Recon: 1.754084 | Sim: 2.424102 | MMF: 3.490731
+[Epoch 2] Total: 5.167505 | Recon: 1.614898 | Sim: 2.344891 | MMF: 2.697592
+[Epoch 3] Total: 4.974888 | Recon: 1.521566 | Sim: 2.304776 | MMF: 2.266350
+[Epoch 4] Total: 4.858581 | Recon: 1.465490 | Sim: 2.284042 | MMF: 1.954313
+[Epoch 5] Total: 4.777761 | Recon: 1.431345 | Sim: 2.264147 | MMF: 1.766096
+[Epoch 6] Total: 4.717007 | Recon: 1.406832 | Sim: 2.245768 | MMF: 1.660995
+[Epoch 7] Total: 4.672377 | Recon: 1.389412 | Sim: 2.231626 | MMF: 1.586883
+[Epoch 8] Total: 4.626870 | Recon: 1.373954 | Sim: 2.217356 | MMF: 1.486181
+[Epoch 9] Total: 4.588159 | Recon: 1.366323 | Sim: 2.199848 | MMF: 1.420490
+[Epoch 10] Total: 4.561646 | Recon: 1.362448 | Sim: 2.186067 | MMF: 1.387038
+[Epoch 11] Total: 4.538866 | Recon: 1.360308 | Sim: 2.177587 | MMF: 1.299363
+[Epoch 12] Total: 4.530523 | Recon: 1.360505 | Sim: 2.173406 | MMF: 1.272500
+[Epoch 13] Total: 4.520565 | Recon: 1.361402 | Sim: 2.169283 | MMF: 1.221670
+[Epoch 14] Total: 4.511392 | Recon: 1.364798 | Sim: 2.163312 | MMF: 1.179580
+[Epoch 15] Total: 4.510471 | Recon: 1.368378 | Sim: 2.161039 | MMF: 1.166388
+[Epoch 16] Total: 4.502855 | Recon: 1.371827 | Sim: 2.158031 | MMF: 1.097856
+[Epoch 17] Total: 4.500781 | Recon: 1.376209 | Sim: 2.154413 | MMF: 1.083930
+[Epoch 18] Total: 4.496914 | Recon: 1.381179 | Sim: 2.151446 | MMF: 1.037101
+[Epoch 19] Total: 4.503311 | Recon: 1.386604 | Sim: 2.150004 | MMF: 1.067010
+[Epoch 20] Total: 4.498858 | Recon: 1.391957 | Sim: 2.147083 | MMF: 1.009850
+[Epoch 21] Total: 4.499236 | Recon: 1.397369 | Sim: 2.145351 | MMF: 0.983764
+[Epoch 22] Total: 4.504495 | Recon: 1.403981 | Sim: 2.143247 | MMF: 0.999684
+[Epoch 23] Total: 4.502148 | Recon: 1.410155 | Sim: 2.141548 | MMF: 0.938260
+[Epoch 24] Total: 4.505473 | Recon: 1.416699 | Sim: 2.139405 | MMF: 0.936061
+[Epoch 25] Total: 4.509606 | Recon: 1.424314 | Sim: 2.138878 | MMF: 0.908640
+[Epoch 26] Total: 4.509346 | Recon: 1.430015 | Sim: 2.136786 | MMF: 0.878307
+[Epoch 27] Total: 4.516434 | Recon: 1.437333 | Sim: 2.135756 | MMF: 0.890423
+[Epoch 28] Total: 4.518660 | Recon: 1.445706 | Sim: 2.135209 | MMF: 0.836623
+[Epoch 29] Total: 4.526680 | Recon: 1.452586 | Sim: 2.134058 | MMF: 0.864120
+[Epoch 30] Total: 4.527114 | Recon: 1.458807 | Sim: 2.132168 | MMF: 0.832718
+[Epoch 31] Total: 4.533696 | Recon: 1.468041 | Sim: 2.131496 | MMF: 0.815612
+[Epoch 32] Total: 4.540998 | Recon: 1.475235 | Sim: 2.130880 | MMF: 0.825305
+[Epoch 33] Total: 4.543364 | Recon: 1.484292 | Sim: 2.130746 | MMF: 0.760275
+[Epoch 34] Total: 4.552691 | Recon: 1.491994 | Sim: 2.129925 | MMF: 0.788014
+[Epoch 35] Total: 4.551037 | Recon: 1.500993 | Sim: 2.128450 | MMF: 0.702141
+[Epoch 36] Total: 4.561027 | Recon: 1.509333 | Sim: 2.127605 | MMF: 0.730465
+[Epoch 37] Total: 4.567540 | Recon: 1.518220 | Sim: 2.127501 | MMF: 0.708187
+[Epoch 38] Total: 4.572802 | Recon: 1.526815 | Sim: 2.126159 | MMF: 0.693654
+[Epoch 39] Total: 4.574768 | Recon: 1.534818 | Sim: 2.125776 | MMF: 0.638631
+[Epoch 40] Total: 4.583461 | Recon: 1.545214 | Sim: 2.124543 | MMF: 0.638866
+[Epoch 41] Total: 4.590008 | Recon: 1.554841 | Sim: 2.124219 | MMF: 0.612605
+[Epoch 42] Total: 4.597050 | Recon: 1.562764 | Sim: 2.124698 | MMF: 0.597090
+[Epoch 43] Total: 4.606843 | Recon: 1.573131 | Sim: 2.123776 | MMF: 0.604257
+[Epoch 44] Total: 4.612578 | Recon: 1.581354 | Sim: 2.122672 | MMF: 0.594829
+[Epoch 45] Total: 4.619835 | Recon: 1.592330 | Sim: 2.121881 | MMF: 0.568729
+[Epoch 46] Total: 4.625521 | Recon: 1.601078 | Sim: 2.120781 | MMF: 0.553488
+[Epoch 47] Total: 4.634605 | Recon: 1.612002 | Sim: 2.121799 | MMF: 0.520847
+[Epoch 48] Total: 4.644035 | Recon: 1.623563 | Sim: 2.120262 | MMF: 0.521055
+[Epoch 49] Total: 4.654734 | Recon: 1.633143 | Sim: 2.120988 | MMF: 0.522075
+Part I training done
+--- 427.54732942581177 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 345.2230670452118 seconds
+Labelspreading takes 64.42755579948425 seconds
+Part II training done
+--- 531.5022966861725 seconds ---
+──────────────────────────────────────────
+Starting training for seed 6...
+Random seed set as 7
+Part I training started! Round 6
+[Epoch 0] Total: 6.214421 | Recon: 2.082093 | Sim: 2.582040 | MMF: 5.174722
+[Epoch 1] Total: 5.393807 | Recon: 1.745496 | Sim: 2.371465 | MMF: 3.282600
+[Epoch 2] Total: 5.117348 | Recon: 1.599795 | Sim: 2.323513 | MMF: 2.646340
+[Epoch 3] Total: 4.924065 | Recon: 1.517696 | Sim: 2.264348 | MMF: 2.362814
+[Epoch 4] Total: 4.804767 | Recon: 1.465298 | Sim: 2.234928 | MMF: 2.105701
+[Epoch 5] Total: 4.719082 | Recon: 1.427494 | Sim: 2.217856 | MMF: 1.865897
+[Epoch 6] Total: 4.663099 | Recon: 1.401860 | Sim: 2.203054 | MMF: 1.769634
+[Epoch 7] Total: 4.623236 | Recon: 1.385537 | Sim: 2.192063 | MMF: 1.688112
+[Epoch 8] Total: 4.587340 | Recon: 1.373011 | Sim: 2.184755 | MMF: 1.556724
+[Epoch 9] Total: 4.560392 | Recon: 1.364319 | Sim: 2.177736 | MMF: 1.472436
+[Epoch 10] Total: 4.547315 | Recon: 1.359627 | Sim: 2.172649 | MMF: 1.459801
+[Epoch 11] Total: 4.529375 | Recon: 1.359081 | Sim: 2.168492 | MMF: 1.344056
+[Epoch 12] Total: 4.519312 | Recon: 1.357873 | Sim: 2.165203 | MMF: 1.301546
+[Epoch 13] Total: 4.515092 | Recon: 1.360318 | Sim: 2.162498 | MMF: 1.272769
+[Epoch 14] Total: 4.507179 | Recon: 1.363346 | Sim: 2.160093 | MMF: 1.197029
+[Epoch 15] Total: 4.504598 | Recon: 1.366731 | Sim: 2.156619 | MMF: 1.186007
+[Epoch 16] Total: 4.499804 | Recon: 1.370078 | Sim: 2.154406 | MMF: 1.135581
+[Epoch 17] Total: 4.498496 | Recon: 1.374856 | Sim: 2.152889 | MMF: 1.095960
+[Epoch 18] Total: 4.497461 | Recon: 1.379459 | Sim: 2.150467 | MMF: 1.073495
+[Epoch 19] Total: 4.496159 | Recon: 1.385616 | Sim: 2.148529 | MMF: 1.026035
+[Epoch 20] Total: 4.498167 | Recon: 1.390408 | Sim: 2.146697 | MMF: 1.023841
+[Epoch 21] Total: 4.500722 | Recon: 1.397309 | Sim: 2.144633 | MMF: 1.009271
+[Epoch 22] Total: 4.504599 | Recon: 1.404413 | Sim: 2.143049 | MMF: 0.999178
+[Epoch 23] Total: 4.501223 | Recon: 1.409717 | Sim: 2.140614 | MMF: 0.946468
+[Epoch 24] Total: 4.509397 | Recon: 1.416154 | Sim: 2.140609 | MMF: 0.963908
+[Epoch 25] Total: 4.511271 | Recon: 1.423569 | Sim: 2.139112 | MMF: 0.929454
+[Epoch 26] Total: 4.516027 | Recon: 1.429678 | Sim: 2.138724 | MMF: 0.921349
+[Epoch 27] Total: 4.519191 | Recon: 1.436897 | Sim: 2.135994 | MMF: 0.919021
+[Epoch 28] Total: 4.522092 | Recon: 1.444047 | Sim: 2.135391 | MMF: 0.884968
+[Epoch 29] Total: 4.524546 | Recon: 1.451780 | Sim: 2.133697 | MMF: 0.855900
+[Epoch 30] Total: 4.531574 | Recon: 1.458833 | Sim: 2.134084 | MMF: 0.850237
+[Epoch 31] Total: 4.535959 | Recon: 1.468248 | Sim: 2.131606 | MMF: 0.834617
+[Epoch 32] Total: 4.543667 | Recon: 1.475537 | Sim: 2.131784 | MMF: 0.836318
+[Epoch 33] Total: 4.548400 | Recon: 1.484877 | Sim: 2.131408 | MMF: 0.795528
+[Epoch 34] Total: 4.553212 | Recon: 1.491946 | Sim: 2.129595 | MMF: 0.798331
+[Epoch 35] Total: 4.558837 | Recon: 1.501067 | Sim: 2.129790 | MMF: 0.760641
+[Epoch 36] Total: 4.568624 | Recon: 1.508944 | Sim: 2.128544 | MMF: 0.797179
+[Epoch 37] Total: 4.568341 | Recon: 1.517141 | Sim: 2.127190 | MMF: 0.731350
+[Epoch 38] Total: 4.577899 | Recon: 1.526377 | Sim: 2.127079 | MMF: 0.736118
+[Epoch 39] Total: 4.583205 | Recon: 1.535684 | Sim: 2.126497 | MMF: 0.704249
+[Epoch 40] Total: 4.585502 | Recon: 1.544610 | Sim: 2.125390 | MMF: 0.653453
+[Epoch 41] Total: 4.594466 | Recon: 1.553724 | Sim: 2.124613 | MMF: 0.662848
+[Epoch 42] Total: 4.600778 | Recon: 1.563853 | Sim: 2.124744 | MMF: 0.622844
+[Epoch 43] Total: 4.606432 | Recon: 1.572518 | Sim: 2.123431 | MMF: 0.611106
+[Epoch 44] Total: 4.616183 | Recon: 1.581314 | Sim: 2.123636 | MMF: 0.617790
+[Epoch 45] Total: 4.624568 | Recon: 1.592861 | Sim: 2.122495 | MMF: 0.602136
+[Epoch 46] Total: 4.629246 | Recon: 1.601121 | Sim: 2.122103 | MMF: 0.571805
+[Epoch 47] Total: 4.639274 | Recon: 1.611955 | Sim: 2.122013 | MMF: 0.565009
+[Epoch 48] Total: 4.645692 | Recon: 1.621711 | Sim: 2.121095 | MMF: 0.544475
+[Epoch 49] Total: 4.657042 | Recon: 1.633627 | Sim: 2.121239 | MMF: 0.536805
+Part I training done
+--- 414.9670820236206 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 321.6740860939026 seconds
+Labelspreading takes 64.8558828830719 seconds
+Part II training done
+--- 438.0748426914215 seconds ---
+──────────────────────────────────────────
+Starting training for seed 7...
+Random seed set as 8
+Part I training started! Round 7
+[Epoch 0] Total: 6.224147 | Recon: 2.085043 | Sim: 2.569600 | MMF: 5.416646
+[Epoch 1] Total: 5.452484 | Recon: 1.739031 | Sim: 2.398964 | MMF: 3.549035
+[Epoch 2] Total: 5.162150 | Recon: 1.595443 | Sim: 2.351340 | MMF: 2.748315
+[Epoch 3] Total: 5.009611 | Recon: 1.518977 | Sim: 2.329530 | MMF: 2.292912
+[Epoch 4] Total: 4.916078 | Recon: 1.469520 | Sim: 2.316479 | MMF: 2.034864
+[Epoch 5] Total: 4.847953 | Recon: 1.434350 | Sim: 2.302478 | MMF: 1.901337
+[Epoch 6] Total: 4.785210 | Recon: 1.408588 | Sim: 2.287208 | MMF: 1.745317
+[Epoch 7] Total: 4.728367 | Recon: 1.387883 | Sim: 2.266097 | MMF: 1.679481
+[Epoch 8] Total: 4.653333 | Recon: 1.376351 | Sim: 2.221823 | MMF: 1.664302
+[Epoch 9] Total: 4.609730 | Recon: 1.367761 | Sim: 2.203658 | MMF: 1.568480
+[Epoch 10] Total: 4.579155 | Recon: 1.361837 | Sim: 2.193223 | MMF: 1.468057
+[Epoch 11] Total: 4.560013 | Recon: 1.360287 | Sim: 2.184164 | MMF: 1.418967
+[Epoch 12] Total: 4.541297 | Recon: 1.360527 | Sim: 2.177757 | MMF: 1.319101
+[Epoch 13] Total: 4.533002 | Recon: 1.362392 | Sim: 2.174379 | MMF: 1.264796
+[Epoch 14] Total: 4.523834 | Recon: 1.364014 | Sim: 2.168514 | MMF: 1.239000
+[Epoch 15] Total: 4.516890 | Recon: 1.367936 | Sim: 2.165483 | MMF: 1.172782
+[Epoch 16] Total: 4.511133 | Recon: 1.372204 | Sim: 2.161017 | MMF: 1.135048
+[Epoch 17] Total: 4.511991 | Recon: 1.376311 | Sim: 2.158271 | MMF: 1.141013
+[Epoch 18] Total: 4.514514 | Recon: 1.381598 | Sim: 2.156081 | MMF: 1.144025
+[Epoch 19] Total: 4.511037 | Recon: 1.387065 | Sim: 2.152895 | MMF: 1.099195
+[Epoch 20] Total: 4.509296 | Recon: 1.392371 | Sim: 2.150351 | MMF: 1.064333
+[Epoch 21] Total: 4.510669 | Recon: 1.398370 | Sim: 2.148966 | MMF: 1.037468
+[Epoch 22] Total: 4.512778 | Recon: 1.404736 | Sim: 2.147691 | MMF: 1.012743
+[Epoch 23] Total: 4.506772 | Recon: 1.409731 | Sim: 2.143922 | MMF: 0.955507
+[Epoch 24] Total: 4.512182 | Recon: 1.416608 | Sim: 2.143115 | MMF: 0.952127
+[Epoch 25] Total: 4.513318 | Recon: 1.423996 | Sim: 2.140267 | MMF: 0.929470
+[Epoch 26] Total: 4.518014 | Recon: 1.430788 | Sim: 2.139195 | MMF: 0.923531
+[Epoch 27] Total: 4.523596 | Recon: 1.438880 | Sim: 2.138184 | MMF: 0.912587
+[Epoch 28] Total: 4.524760 | Recon: 1.444935 | Sim: 2.135479 | MMF: 0.901542
+[Epoch 29] Total: 4.530769 | Recon: 1.452230 | Sim: 2.135290 | MMF: 0.891317
+[Epoch 30] Total: 4.535387 | Recon: 1.460516 | Sim: 2.134420 | MMF: 0.866827
+[Epoch 31] Total: 4.539490 | Recon: 1.468375 | Sim: 2.132981 | MMF: 0.849425
+[Epoch 32] Total: 4.544170 | Recon: 1.476714 | Sim: 2.132584 | MMF: 0.818377
+[Epoch 33] Total: 4.546723 | Recon: 1.484531 | Sim: 2.131173 | MMF: 0.785496
+[Epoch 34] Total: 4.551910 | Recon: 1.492747 | Sim: 2.130582 | MMF: 0.763482
+[Epoch 35] Total: 4.557766 | Recon: 1.500685 | Sim: 2.128638 | MMF: 0.769881
+[Epoch 36] Total: 4.566021 | Recon: 1.509600 | Sim: 2.128276 | MMF: 0.768347
+[Epoch 37] Total: 4.572672 | Recon: 1.517875 | Sim: 2.128542 | MMF: 0.748387
+[Epoch 38] Total: 4.576368 | Recon: 1.526719 | Sim: 2.127366 | MMF: 0.713358
+[Epoch 39] Total: 4.582978 | Recon: 1.536523 | Sim: 2.126742 | MMF: 0.690165
+[Epoch 40] Total: 4.591186 | Recon: 1.546233 | Sim: 2.126009 | MMF: 0.685404
+[Epoch 41] Total: 4.595663 | Recon: 1.553842 | Sim: 2.125062 | MMF: 0.667341
+[Epoch 42] Total: 4.603112 | Recon: 1.564170 | Sim: 2.123780 | MMF: 0.656498
+[Epoch 43] Total: 4.609006 | Recon: 1.573236 | Sim: 2.124102 | MMF: 0.620272
+[Epoch 44] Total: 4.619053 | Recon: 1.582524 | Sim: 2.124620 | MMF: 0.620608
+[Epoch 45] Total: 4.622385 | Recon: 1.592801 | Sim: 2.122441 | MMF: 0.581663
+[Epoch 46] Total: 4.631491 | Recon: 1.602086 | Sim: 2.122695 | MMF: 0.576326
+[Epoch 47] Total: 4.642189 | Recon: 1.612708 | Sim: 2.123044 | MMF: 0.572198
+[Epoch 48] Total: 4.647640 | Recon: 1.622226 | Sim: 2.121684 | MMF: 0.550568
+[Epoch 49] Total: 4.656891 | Recon: 1.632759 | Sim: 2.121194 | MMF: 0.544606
+Part I training done
+--- 202.45206308364868 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 161.15001440048218 seconds
+Labelspreading takes 62.722179889678955 seconds
+Part II training done
+--- 264.2733266353607 seconds ---
+──────────────────────────────────────────
+Starting training for seed 8...
+Random seed set as 9
+Part I training started! Round 8
+[Epoch 0] Total: 6.226333 | Recon: 2.070271 | Sim: 2.599046 | MMF: 5.173977
+[Epoch 1] Total: 5.400061 | Recon: 1.735388 | Sim: 2.378602 | MMF: 3.346298
+[Epoch 2] Total: 5.124321 | Recon: 1.598366 | Sim: 2.331641 | MMF: 2.616567
+[Epoch 3] Total: 4.974118 | Recon: 1.519096 | Sim: 2.310681 | MMF: 2.200678
+[Epoch 4] Total: 4.874960 | Recon: 1.469182 | Sim: 2.289085 | MMF: 2.010584
+[Epoch 5] Total: 4.796233 | Recon: 1.432633 | Sim: 2.273398 | MMF: 1.808433
+[Epoch 6] Total: 4.738588 | Recon: 1.407306 | Sim: 2.256510 | MMF: 1.721682
+[Epoch 7] Total: 4.660420 | Recon: 1.387814 | Sim: 2.219524 | MMF: 1.652719
+[Epoch 8] Total: 4.609296 | Recon: 1.373946 | Sim: 2.199068 | MMF: 1.566540
+[Epoch 9] Total: 4.578395 | Recon: 1.366003 | Sim: 2.187582 | MMF: 1.497779
+[Epoch 10] Total: 4.553747 | Recon: 1.360834 | Sim: 2.180481 | MMF: 1.402390
+[Epoch 11] Total: 4.536003 | Recon: 1.358366 | Sim: 2.173227 | MMF: 1.351194
+[Epoch 12] Total: 4.528757 | Recon: 1.358946 | Sim: 2.170151 | MMF: 1.315995
+[Epoch 13] Total: 4.516137 | Recon: 1.360138 | Sim: 2.166681 | MMF: 1.226446
+[Epoch 14] Total: 4.508201 | Recon: 1.362812 | Sim: 2.161807 | MMF: 1.188595
+[Epoch 15] Total: 4.504698 | Recon: 1.366130 | Sim: 2.158032 | MMF: 1.173231
+[Epoch 16] Total: 4.503975 | Recon: 1.370247 | Sim: 2.156672 | MMF: 1.143876
+[Epoch 17] Total: 4.504457 | Recon: 1.375713 | Sim: 2.153783 | MMF: 1.134479
+[Epoch 18] Total: 4.503025 | Recon: 1.380715 | Sim: 2.151100 | MMF: 1.107709
+[Epoch 19] Total: 4.501900 | Recon: 1.385624 | Sim: 2.149452 | MMF: 1.070425
+[Epoch 20] Total: 4.504108 | Recon: 1.392247 | Sim: 2.146836 | MMF: 1.062913
+[Epoch 21] Total: 4.506695 | Recon: 1.397345 | Sim: 2.146122 | MMF: 1.047790
+[Epoch 22] Total: 4.504897 | Recon: 1.403080 | Sim: 2.142760 | MMF: 1.019532
+[Epoch 23] Total: 4.507099 | Recon: 1.410150 | Sim: 2.142238 | MMF: 0.978165
+[Epoch 24] Total: 4.511192 | Recon: 1.416454 | Sim: 2.140825 | MMF: 0.975842
+[Epoch 25] Total: 4.514571 | Recon: 1.423492 | Sim: 2.139287 | MMF: 0.960775
+[Epoch 26] Total: 4.519251 | Recon: 1.431109 | Sim: 2.138507 | MMF: 0.942326
+[Epoch 27] Total: 4.521566 | Recon: 1.436562 | Sim: 2.137177 | MMF: 0.929564
+[Epoch 28] Total: 4.524176 | Recon: 1.445483 | Sim: 2.136098 | MMF: 0.881566
+[Epoch 29] Total: 4.528697 | Recon: 1.452131 | Sim: 2.134282 | MMF: 0.885717
+[Epoch 30] Total: 4.531478 | Recon: 1.459834 | Sim: 2.133594 | MMF: 0.846130
+[Epoch 31] Total: 4.539717 | Recon: 1.467455 | Sim: 2.132682 | MMF: 0.865071
+[Epoch 32] Total: 4.544641 | Recon: 1.475948 | Sim: 2.132618 | MMF: 0.830284
+[Epoch 33] Total: 4.549642 | Recon: 1.483277 | Sim: 2.131736 | MMF: 0.819348
+[Epoch 34] Total: 4.556162 | Recon: 1.492447 | Sim: 2.131212 | MMF: 0.800172
+[Epoch 35] Total: 4.559639 | Recon: 1.500660 | Sim: 2.130398 | MMF: 0.764216
+[Epoch 36] Total: 4.563541 | Recon: 1.509228 | Sim: 2.128600 | MMF: 0.742728
+[Epoch 37] Total: 4.569578 | Recon: 1.517194 | Sim: 2.128354 | MMF: 0.726885
+[Epoch 38] Total: 4.577491 | Recon: 1.526379 | Sim: 2.127234 | MMF: 0.729846
+[Epoch 39] Total: 4.582827 | Recon: 1.534576 | Sim: 2.126796 | MMF: 0.707373
+[Epoch 40] Total: 4.592868 | Recon: 1.545000 | Sim: 2.128131 | MMF: 0.684837
+[Epoch 41] Total: 4.598646 | Recon: 1.554845 | Sim: 2.125923 | MMF: 0.675089
+[Epoch 42] Total: 4.604064 | Recon: 1.563803 | Sim: 2.125778 | MMF: 0.641721
+[Epoch 43] Total: 4.610090 | Recon: 1.572788 | Sim: 2.124596 | MMF: 0.628668
+[Epoch 44] Total: 4.616280 | Recon: 1.582110 | Sim: 2.124707 | MMF: 0.595801
+[Epoch 45] Total: 4.625922 | Recon: 1.592583 | Sim: 2.124029 | MMF: 0.596980
+[Epoch 46] Total: 4.633088 | Recon: 1.601542 | Sim: 2.123286 | MMF: 0.589459
+[Epoch 47] Total: 4.640470 | Recon: 1.611675 | Sim: 2.122775 | MMF: 0.569099
+[Epoch 48] Total: 4.651606 | Recon: 1.623216 | Sim: 2.122219 | MMF: 0.572839
+[Epoch 49] Total: 4.659179 | Recon: 1.632192 | Sim: 2.122548 | MMF: 0.554212
+Part I training done
+--- 221.4096348285675 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 165.13009643554688 seconds
+Labelspreading takes 62.686896324157715 seconds
+Part II training done
+--- 270.82748079299927 seconds ---
+──────────────────────────────────────────
+Starting training for seed 9...
+Random seed set as 10
+Part I training started! Round 9
+[Epoch 0] Total: 6.153925 | Recon: 2.055576 | Sim: 2.562472 | MMF: 5.108880
+[Epoch 1] Total: 5.372472 | Recon: 1.734018 | Sim: 2.370015 | MMF: 3.204339
+[Epoch 2] Total: 5.099122 | Recon: 1.593563 | Sim: 2.322219 | MMF: 2.544527
+[Epoch 3] Total: 4.910045 | Recon: 1.510672 | Sim: 2.264640 | MMF: 2.288766
+[Epoch 4] Total: 4.789357 | Recon: 1.456793 | Sim: 2.233615 | MMF: 2.055030
+[Epoch 5] Total: 4.711292 | Recon: 1.421617 | Sim: 2.216246 | MMF: 1.869305
+[Epoch 6] Total: 4.661752 | Recon: 1.395963 | Sim: 2.205847 | MMF: 1.776031
+[Epoch 7] Total: 4.616551 | Recon: 1.378917 | Sim: 2.194968 | MMF: 1.646787
+[Epoch 8] Total: 4.589728 | Recon: 1.368400 | Sim: 2.188605 | MMF: 1.572809
+[Epoch 9] Total: 4.562603 | Recon: 1.361632 | Sim: 2.180674 | MMF: 1.480273
+[Epoch 10] Total: 4.549373 | Recon: 1.357550 | Sim: 2.176754 | MMF: 1.443675
+[Epoch 11] Total: 4.533369 | Recon: 1.356289 | Sim: 2.171621 | MMF: 1.368109
+[Epoch 12] Total: 4.524814 | Recon: 1.357648 | Sim: 2.168857 | MMF: 1.307655
+[Epoch 13] Total: 4.517222 | Recon: 1.358719 | Sim: 2.164835 | MMF: 1.277333
+[Epoch 14] Total: 4.509512 | Recon: 1.361827 | Sim: 2.160937 | MMF: 1.223732
+[Epoch 15] Total: 4.507840 | Recon: 1.366338 | Sim: 2.158361 | MMF: 1.197966
+[Epoch 16] Total: 4.505080 | Recon: 1.370005 | Sim: 2.155198 | MMF: 1.177973
+[Epoch 17] Total: 4.501798 | Recon: 1.375368 | Sim: 2.152228 | MMF: 1.133109
+[Epoch 18] Total: 4.505978 | Recon: 1.380168 | Sim: 2.150994 | MMF: 1.144179
+[Epoch 19] Total: 4.500761 | Recon: 1.385403 | Sim: 2.148945 | MMF: 1.068359
+[Epoch 20] Total: 4.504756 | Recon: 1.391643 | Sim: 2.146682 | MMF: 1.077581
+[Epoch 21] Total: 4.503464 | Recon: 1.397273 | Sim: 2.143915 | MMF: 1.047101
+[Epoch 22] Total: 4.506929 | Recon: 1.403896 | Sim: 2.142760 | MMF: 1.031694
+[Epoch 23] Total: 4.510728 | Recon: 1.409693 | Sim: 2.140492 | MMF: 1.043465
+[Epoch 24] Total: 4.510290 | Recon: 1.415942 | Sim: 2.139274 | MMF: 0.993638
+[Epoch 25] Total: 4.515084 | Recon: 1.422814 | Sim: 2.137720 | MMF: 0.994610
+[Epoch 26] Total: 4.515880 | Recon: 1.429540 | Sim: 2.136579 | MMF: 0.951288
+[Epoch 27] Total: 4.521125 | Recon: 1.437712 | Sim: 2.136088 | MMF: 0.928912
+[Epoch 28] Total: 4.525835 | Recon: 1.444898 | Sim: 2.135030 | MMF: 0.918945
+[Epoch 29] Total: 4.526233 | Recon: 1.451935 | Sim: 2.132841 | MMF: 0.883206
+[Epoch 30] Total: 4.534626 | Recon: 1.459836 | Sim: 2.132661 | MMF: 0.890649
+[Epoch 31] Total: 4.539586 | Recon: 1.466960 | Sim: 2.131819 | MMF: 0.880798
+[Epoch 32] Total: 4.544374 | Recon: 1.475900 | Sim: 2.131448 | MMF: 0.844477
+[Epoch 33] Total: 4.546742 | Recon: 1.482522 | Sim: 2.129942 | MMF: 0.823015
+[Epoch 34] Total: 4.553562 | Recon: 1.492115 | Sim: 2.129756 | MMF: 0.797896
+[Epoch 35] Total: 4.558839 | Recon: 1.501018 | Sim: 2.128389 | MMF: 0.780765
+[Epoch 36] Total: 4.567268 | Recon: 1.508996 | Sim: 2.128810 | MMF: 0.779386
+[Epoch 37] Total: 4.568516 | Recon: 1.518148 | Sim: 2.127750 | MMF: 0.715176
+[Epoch 38] Total: 4.578897 | Recon: 1.527880 | Sim: 2.127657 | MMF: 0.722970
+[Epoch 39] Total: 4.584645 | Recon: 1.535489 | Sim: 2.126900 | MMF: 0.714958
+[Epoch 40] Total: 4.590024 | Recon: 1.544289 | Sim: 2.125535 | MMF: 0.699859
+[Epoch 41] Total: 4.594918 | Recon: 1.554238 | Sim: 2.124723 | MMF: 0.660677
+[Epoch 42] Total: 4.602630 | Recon: 1.562738 | Sim: 2.124473 | MMF: 0.656312
+[Epoch 43] Total: 4.611744 | Recon: 1.572766 | Sim: 2.124536 | MMF: 0.646275
+[Epoch 44] Total: 4.617739 | Recon: 1.582684 | Sim: 2.123231 | MMF: 0.625322
+[Epoch 45] Total: 4.625030 | Recon: 1.591679 | Sim: 2.123496 | MMF: 0.604566
+[Epoch 46] Total: 4.632327 | Recon: 1.602645 | Sim: 2.122641 | MMF: 0.579839
+[Epoch 47] Total: 4.642354 | Recon: 1.611562 | Sim: 2.122547 | MMF: 0.592257
+[Epoch 48] Total: 4.649235 | Recon: 1.623090 | Sim: 2.121960 | MMF: 0.554005
+[Epoch 49] Total: 4.655214 | Recon: 1.633113 | Sim: 2.121924 | MMF: 0.514069
+Part I training done
+--- 224.39668083190918 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 165.22582912445068 seconds
+Labelspreading takes 61.055628538131714 seconds
+Part II training done
+--- 266.43580174446106 seconds ---
+──────────────────────────────────────────
+Starting training for seed 10...
+Random seed set as 11
+Part I training started! Round 10
+[Epoch 0] Total: 6.207923 | Recon: 2.065711 | Sim: 2.597138 | MMF: 5.062186
+[Epoch 1] Total: 5.400466 | Recon: 1.734455 | Sim: 2.374738 | MMF: 3.413776
+[Epoch 2] Total: 5.132921 | Recon: 1.593245 | Sim: 2.336326 | MMF: 2.688207
+[Epoch 3] Total: 4.983775 | Recon: 1.511566 | Sim: 2.317739 | MMF: 2.273746
+[Epoch 4] Total: 4.884367 | Recon: 1.462864 | Sim: 2.300494 | MMF: 2.008117
+[Epoch 5] Total: 4.808855 | Recon: 1.428333 | Sim: 2.280878 | MMF: 1.872921
+[Epoch 6] Total: 4.727300 | Recon: 1.403581 | Sim: 2.242909 | MMF: 1.836463
+[Epoch 7] Total: 4.650323 | Recon: 1.385035 | Sim: 2.210420 | MMF: 1.706995
+[Epoch 8] Total: 4.611010 | Recon: 1.372863 | Sim: 2.197300 | MMF: 1.619269
+[Epoch 9] Total: 4.581501 | Recon: 1.365846 | Sim: 2.188532 | MMF: 1.517099
+[Epoch 10] Total: 4.564868 | Recon: 1.363474 | Sim: 2.184643 | MMF: 1.428946
+[Epoch 11] Total: 4.548159 | Recon: 1.361573 | Sim: 2.177440 | MMF: 1.381711
+[Epoch 12] Total: 4.530595 | Recon: 1.360995 | Sim: 2.172726 | MMF: 1.277831
+[Epoch 13] Total: 4.527434 | Recon: 1.362452 | Sim: 2.169261 | MMF: 1.280175
+[Epoch 14] Total: 4.518696 | Recon: 1.363529 | Sim: 2.165001 | MMF: 1.241656
+[Epoch 15] Total: 4.511515 | Recon: 1.368532 | Sim: 2.161430 | MMF: 1.169815
+[Epoch 16] Total: 4.506964 | Recon: 1.371423 | Sim: 2.158630 | MMF: 1.134586
+[Epoch 17] Total: 4.506101 | Recon: 1.376550 | Sim: 2.156021 | MMF: 1.111218
+[Epoch 18] Total: 4.505825 | Recon: 1.381964 | Sim: 2.154055 | MMF: 1.081833
+[Epoch 19] Total: 4.505119 | Recon: 1.386356 | Sim: 2.151407 | MMF: 1.067928
+[Epoch 20] Total: 4.506848 | Recon: 1.393149 | Sim: 2.150205 | MMF: 1.034116
+[Epoch 21] Total: 4.507743 | Recon: 1.397937 | Sim: 2.147524 | MMF: 1.032725
+[Epoch 22] Total: 4.510563 | Recon: 1.404837 | Sim: 2.145896 | MMF: 1.014714
+[Epoch 23] Total: 4.515109 | Recon: 1.410128 | Sim: 2.145489 | MMF: 1.012970
+[Epoch 24] Total: 4.515158 | Recon: 1.416956 | Sim: 2.143714 | MMF: 0.970023
+[Epoch 25] Total: 4.515540 | Recon: 1.423906 | Sim: 2.140871 | MMF: 0.944151
+[Epoch 26] Total: 4.521915 | Recon: 1.431163 | Sim: 2.140759 | MMF: 0.936892
+[Epoch 27] Total: 4.524367 | Recon: 1.438741 | Sim: 2.137956 | MMF: 0.924881
+[Epoch 28] Total: 4.528566 | Recon: 1.446227 | Sim: 2.138865 | MMF: 0.879278
+[Epoch 29] Total: 4.529333 | Recon: 1.452059 | Sim: 2.135036 | MMF: 0.882233
+[Epoch 30] Total: 4.535000 | Recon: 1.460958 | Sim: 2.133876 | MMF: 0.866145
+[Epoch 31] Total: 4.543773 | Recon: 1.468938 | Sim: 2.133976 | MMF: 0.872674
+[Epoch 32] Total: 4.542070 | Recon: 1.476961 | Sim: 2.131834 | MMF: 0.805417
+[Epoch 33] Total: 4.545554 | Recon: 1.483427 | Sim: 2.130666 | MMF: 0.791955
+[Epoch 34] Total: 4.553643 | Recon: 1.492114 | Sim: 2.130456 | MMF: 0.788911
+[Epoch 35] Total: 4.557388 | Recon: 1.501125 | Sim: 2.128628 | MMF: 0.761850
+[Epoch 36] Total: 4.562658 | Recon: 1.509446 | Sim: 2.127829 | MMF: 0.742508
+[Epoch 37] Total: 4.568636 | Recon: 1.518434 | Sim: 2.127373 | MMF: 0.718792
+[Epoch 38] Total: 4.578784 | Recon: 1.527198 | Sim: 2.127626 | MMF: 0.729101
+[Epoch 39] Total: 4.584710 | Recon: 1.536673 | Sim: 2.125625 | MMF: 0.721617
+[Epoch 40] Total: 4.586392 | Recon: 1.545223 | Sim: 2.125303 | MMF: 0.657451
+[Epoch 41] Total: 4.597710 | Recon: 1.554578 | Sim: 2.125045 | MMF: 0.680680
+[Epoch 42] Total: 4.605079 | Recon: 1.564559 | Sim: 2.124771 | MMF: 0.658408
+[Epoch 43] Total: 4.612433 | Recon: 1.573750 | Sim: 2.124781 | MMF: 0.639893
+[Epoch 44] Total: 4.617604 | Recon: 1.583318 | Sim: 2.123914 | MMF: 0.608071
+[Epoch 45] Total: 4.623229 | Recon: 1.592939 | Sim: 2.122568 | MMF: 0.586944
+[Epoch 46] Total: 4.634697 | Recon: 1.602991 | Sim: 2.122884 | MMF: 0.596678
+[Epoch 47] Total: 4.642252 | Recon: 1.612390 | Sim: 2.122954 | MMF: 0.577270
+[Epoch 48] Total: 4.651930 | Recon: 1.623834 | Sim: 2.122539 | MMF: 0.565415
+[Epoch 49] Total: 4.656903 | Recon: 1.633612 | Sim: 2.121260 | MMF: 0.535277
+Part I training done
+--- 202.52284574508667 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 148.0885362625122 seconds
+Labelspreading takes 62.80411100387573 seconds
+Part II training done
+--- 251.59319591522217 seconds ---
+Loading seed 1
+Loading seed 2
+Loading seed 3
+Loading seed 4
+Loading seed 5
+Loading seed 6
+Loading seed 7
+Loading seed 8
+Loading seed 9
+Loading seed 10
+Saving voted seed 1
+Saving voted seed 2
+Saving voted seed 3
+Saving voted seed 4
+Saving voted seed 5
+Saving voted seed 6
+Saving voted seed 7
+Saving voted seed 8
+Saving voted seed 9
+Saving voted seed 10
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">args</span> <span class="o">=</span> <span class="n">run_NovAST</span><span class="p">(</span>
+    <span class="n">training_mode</span><span class="o">=</span><span class="n">training_mode</span><span class="p">,</span>
+    <span class="n">train_path</span><span class="o">=</span><span class="n">train_path</span><span class="p">,</span>
+    <span class="n">test_path</span><span class="o">=</span><span class="n">test_path</span><span class="p">,</span>
+    <span class="n">celltype_name_train</span><span class="o">=</span><span class="n">celltype_name_train</span><span class="p">,</span>
+    <span class="n">celltype_name_test</span><span class="o">=</span><span class="n">celltype_name_test</span><span class="p">,</span>
+    <span class="n">region_name_test</span><span class="o">=</span><span class="n">region_name_test</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Random seed set as 42
+The saving directory set to ./demo_evaluation_noremoval
+Number of overlapped genes: 254
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/oscar/data/yma16/yzhu194/stellar/01_pkg_test/NovAST/preprocess.py:51: ImplicitModificationWarning: Setting element `.layers[&#39;counts&#39;]` of view, initializing view as actual.
+  adata_train_subset.layers[&#34;counts&#34;] = adata_train_subset.X.copy()
+/oscar/data/yma16/yzhu194/stellar/01_pkg_test/NovAST/preprocess.py:52: ImplicitModificationWarning: Setting element `.layers[&#39;counts&#39;]` of view, initializing view as actual.
+  adata_test_subset.layers[&#34;counts&#34;]  = adata_test_subset.X.copy()
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Datasets have been preprocessed!
+Loading seed 1
+Loading seed 2
+Loading seed 3
+Loading seed 4
+Loading seed 5
+Loading seed 6
+Loading seed 7
+Loading seed 8
+Loading seed 9
+Loading seed 10
+Saving voted seed 1
+Saving voted seed 2
+Saving voted seed 3
+Saving voted seed 4
+Saving voted seed 5
+Saving voted seed 6
+Saving voted seed 7
+Saving voted seed 8
+Saving voted seed 9
+Saving voted seed 10
+</pre></div></div>
+</div>
+<p>For each training round, the pipeline saves all outputs to the specified directory, with each random seed assigned its own subfolder. This includes the trained model, the Stage-1 loss values, and a final result file named <strong>``adata_unlabeled_final.h5ad``</strong>, which stores the latent embeddings in <strong>``.obsm[‘X_latent’]``</strong> and the final predicted labels in <strong>``.obs[‘voted_final_prediction’]``</strong>.</p>
+</section>
+<section id="5.-Visualize-the-output">
+<h3>5. Visualize the output<a class="headerlink" href="#5.-Visualize-the-output" title="Link to this heading"></a></h3>
+<p>Running the following line of code will generate UMAP and spatial visualizations of the results and save them in each individual seed’s output directory. Evaluation metrics will also be computed and saved. Below, we show several representative seeds and slices.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metrics_df</span> <span class="o">=</span> <span class="n">NovAST_evaluation</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Evaluation mode detected. Processing 2 seeds...
+
+──────────────────────────────────────────
+Starting evaluation for seed 1...
+Random seed set as 2
+Generating UMAP plot with ground truth...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_evaluation_16_1.png" src="_images/demo_evaluation_16_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+UMAP plot saved.
+Generating spatial plot (region key = slice)...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_evaluation_16_3.png" src="_images/demo_evaluation_16_3.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Spatial plot saved.
+
+──────────────────────────────────────────
+Starting evaluation for seed 2...
+Random seed set as 3
+Generating UMAP plot with ground truth...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_evaluation_16_5.png" src="_images/demo_evaluation_16_5.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+UMAP plot saved.
+Generating spatial plot (region key = slice)...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_evaluation_16_7.png" src="_images/demo_evaluation_16_7.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Spatial plot saved.
+
+──────────────────────────────────────────
+All seeds processed. Computing aggregated metrics...
+
+Perfect match: returning original labels.
+Perfect match: returning original labels.
+
+========== Mean Metrics Across Seeds ==========
+accuracy       0.9653
+weighted_F1    0.9654
+ARI            0.9398
+macro_F1       0.9580
+dtype: float64
+==============================================
+
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Pseudo-novel-setting">
+<h2>Pseudo-novel setting<a class="headerlink" href="#Pseudo-novel-setting" title="Link to this heading"></a></h2>
+<p>Next, we show the setup for running the <strong>pseudo-novel</strong> setting. All arguments remain the same, except that <code class="docutils literal notranslate"><span class="pre">remove_celltype</span></code> should be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> to enable the pseudo-novel mode, and <code class="docutils literal notranslate"><span class="pre">remove_celltype_type</span></code> should be set to one of <code class="docutils literal notranslate"><span class="pre">['most',</span> <span class="pre">'least',</span> <span class="pre">'closest',</span> <span class="pre">'furthest']</span></code>, corresponding to the <strong>Most Abundant</strong>, <strong>Least Abundant</strong>, <strong>Most Mixed</strong>, and <strong>Most Separated</strong> scenarios, respectively.</p>
+<p>Here, we illustrate the <strong>Most Abundant</strong> setting.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># similarly, if we want to remove a cell type</span>
+<span class="n">name</span><span class="o">=</span><span class="s2">&quot;demo_evaluation_removemost&quot;</span>
+<span class="n">args</span> <span class="o">=</span> <span class="n">run_NovAST</span><span class="p">(</span>
+    <span class="n">training_mode</span><span class="o">=</span><span class="n">training_mode</span><span class="p">,</span>
+    <span class="n">train_path</span><span class="o">=</span><span class="n">train_path</span><span class="p">,</span>
+    <span class="n">test_path</span><span class="o">=</span><span class="n">test_path</span><span class="p">,</span>
+    <span class="n">celltype_name_train</span><span class="o">=</span><span class="n">celltype_name_train</span><span class="p">,</span>
+    <span class="n">celltype_name_test</span><span class="o">=</span><span class="n">celltype_name_test</span><span class="p">,</span>
+    <span class="n">region_name_test</span><span class="o">=</span><span class="n">region_name_test</span><span class="p">,</span>
+    <span class="n">remove_celltype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">remove_celltype_type</span><span class="o">=</span><span class="s2">&quot;most&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+    <span class="n">spot_size</span><span class="o">=</span><span class="mi">22</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Random seed set as 42
+The saving directory set to ./demo_evaluation_removemost
+Number of overlapped genes: 254
+Datasets have been preprocessed!
+Removed from TRAIN: [&#39;l2_3_it&#39;]
+──────────────────────────────────────────
+Starting training for seed 1...
+Random seed set as 2
+Part I training started! Round 1
+[Epoch 0] Total: 6.156854 | Recon: 2.112357 | Sim: 2.526604 | MMF: 5.072507
+[Epoch 1] Total: 5.402140 | Recon: 1.795725 | Sim: 2.350595 | MMF: 3.155831
+[Epoch 2] Total: 5.160182 | Recon: 1.657013 | Sim: 2.312059 | MMF: 2.662864
+[Epoch 3] Total: 5.005142 | Recon: 1.572337 | Sim: 2.288109 | MMF: 2.294528
+[Epoch 4] Total: 4.895429 | Recon: 1.515140 | Sim: 2.268366 | MMF: 2.045771
+[Epoch 5] Total: 4.796342 | Recon: 1.473776 | Sim: 2.235491 | MMF: 1.928783
+[Epoch 6] Total: 4.677894 | Recon: 1.444929 | Sim: 2.175991 | MMF: 1.865765
+[Epoch 7] Total: 4.610764 | Recon: 1.417169 | Sim: 2.157641 | MMF: 1.728973
+[Epoch 8] Total: 4.563101 | Recon: 1.400158 | Sim: 2.145658 | MMF: 1.590218
+[Epoch 9] Total: 4.526328 | Recon: 1.384365 | Sim: 2.136959 | MMF: 1.502209
+[Epoch 10] Total: 4.506441 | Recon: 1.376335 | Sim: 2.130887 | MMF: 1.468642
+[Epoch 11] Total: 4.484426 | Recon: 1.369781 | Sim: 2.127009 | MMF: 1.368325
+[Epoch 12] Total: 4.468973 | Recon: 1.365383 | Sim: 2.122110 | MMF: 1.326356
+[Epoch 13] Total: 4.457199 | Recon: 1.362567 | Sim: 2.118602 | MMF: 1.285887
+[Epoch 14] Total: 4.445304 | Recon: 1.363539 | Sim: 2.114253 | MMF: 1.218110
+[Epoch 15] Total: 4.441769 | Recon: 1.365665 | Sim: 2.112216 | MMF: 1.190017
+[Epoch 16] Total: 4.437135 | Recon: 1.366010 | Sim: 2.109508 | MMF: 1.178139
+[Epoch 17] Total: 4.431299 | Recon: 1.368963 | Sim: 2.105676 | MMF: 1.143898
+[Epoch 18] Total: 4.431339 | Recon: 1.372495 | Sim: 2.104747 | MMF: 1.121980
+[Epoch 19] Total: 4.422635 | Recon: 1.373491 | Sim: 2.100970 | MMF: 1.077867
+[Epoch 20] Total: 4.424646 | Recon: 1.380281 | Sim: 2.098694 | MMF: 1.061941
+[Epoch 21] Total: 4.422084 | Recon: 1.383387 | Sim: 2.095666 | MMF: 1.047644
+[Epoch 22] Total: 4.419326 | Recon: 1.387624 | Sim: 2.093054 | MMF: 1.014262
+[Epoch 23] Total: 4.417558 | Recon: 1.391848 | Sim: 2.090452 | MMF: 0.990770
+[Epoch 24] Total: 4.422474 | Recon: 1.397286 | Sim: 2.089083 | MMF: 1.004721
+[Epoch 25] Total: 4.421973 | Recon: 1.401070 | Sim: 2.088615 | MMF: 0.968415
+[Epoch 26] Total: 4.423327 | Recon: 1.406860 | Sim: 2.087176 | MMF: 0.944209
+[Epoch 27] Total: 4.422496 | Recon: 1.412084 | Sim: 2.085441 | MMF: 0.907952
+[Epoch 28] Total: 4.429467 | Recon: 1.418430 | Sim: 2.085425 | MMF: 0.914416
+[Epoch 29] Total: 4.432977 | Recon: 1.423809 | Sim: 2.084773 | MMF: 0.904860
+[Epoch 30] Total: 4.437427 | Recon: 1.429886 | Sim: 2.084125 | MMF: 0.897669
+[Epoch 31] Total: 4.435322 | Recon: 1.435281 | Sim: 2.081594 | MMF: 0.858088
+[Epoch 32] Total: 4.441395 | Recon: 1.442966 | Sim: 2.081494 | MMF: 0.843366
+[Epoch 33] Total: 4.443401 | Recon: 1.448517 | Sim: 2.081197 | MMF: 0.812083
+[Epoch 34] Total: 4.447827 | Recon: 1.453840 | Sim: 2.079510 | MMF: 0.826726
+[Epoch 35] Total: 4.452967 | Recon: 1.460713 | Sim: 2.079114 | MMF: 0.814944
+[Epoch 36] Total: 4.453725 | Recon: 1.466251 | Sim: 2.079248 | MMF: 0.765269
+[Epoch 37] Total: 4.464017 | Recon: 1.473417 | Sim: 2.078399 | MMF: 0.808420
+[Epoch 38] Total: 4.465117 | Recon: 1.481465 | Sim: 2.078084 | MMF: 0.743347
+[Epoch 39] Total: 4.464616 | Recon: 1.486280 | Sim: 2.076509 | MMF: 0.712236
+[Epoch 40] Total: 4.476213 | Recon: 1.494069 | Sim: 2.076913 | MMF: 0.744652
+[Epoch 41] Total: 4.480309 | Recon: 1.502669 | Sim: 2.075084 | MMF: 0.725227
+[Epoch 42] Total: 4.482926 | Recon: 1.507993 | Sim: 2.074814 | MMF: 0.701935
+[Epoch 43] Total: 4.493666 | Recon: 1.517534 | Sim: 2.075010 | MMF: 0.711187
+[Epoch 44] Total: 4.497426 | Recon: 1.524361 | Sim: 2.074360 | MMF: 0.689603
+[Epoch 45] Total: 4.502519 | Recon: 1.531174 | Sim: 2.073759 | MMF: 0.680816
+[Epoch 46] Total: 4.511211 | Recon: 1.540168 | Sim: 2.074134 | MMF: 0.672553
+[Epoch 47] Total: 4.512500 | Recon: 1.547970 | Sim: 2.073294 | MMF: 0.619181
+[Epoch 48] Total: 4.517095 | Recon: 1.555081 | Sim: 2.071889 | MMF: 0.613700
+[Epoch 49] Total: 4.522362 | Recon: 1.562636 | Sim: 2.071534 | MMF: 0.595784
+Part I training done
+--- 200.1027340888977 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/oscar/home/yzhu194/stellar_py/lib/python3.11/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+2025-12-17 20:21:12.852242: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-12-17 20:21:14.360829: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+UMAPing takes 181.91225504875183 seconds
+Labelspreading takes 58.96129655838013 seconds
+Part II training done
+--- 289.9802293777466 seconds ---
+──────────────────────────────────────────
+Starting training for seed 2...
+Random seed set as 3
+Part I training started! Round 2
+[Epoch 0] Total: 6.318505 | Recon: 2.116507 | Sim: 2.592481 | MMF: 5.725235
+[Epoch 1] Total: 5.445428 | Recon: 1.797765 | Sim: 2.355856 | MMF: 3.494651
+[Epoch 2] Total: 5.174233 | Recon: 1.656894 | Sim: 2.320888 | MMF: 2.680962
+[Epoch 3] Total: 5.007721 | Recon: 1.567116 | Sim: 2.291528 | MMF: 2.324663
+[Epoch 4] Total: 4.851381 | Recon: 1.513488 | Sim: 2.229927 | MMF: 2.159952
+[Epoch 5] Total: 4.733577 | Recon: 1.470265 | Sim: 2.188176 | MMF: 1.998665
+[Epoch 6] Total: 4.662173 | Recon: 1.437999 | Sim: 2.169901 | MMF: 1.863122
+[Epoch 7] Total: 4.608269 | Recon: 1.413359 | Sim: 2.158376 | MMF: 1.731841
+[Epoch 8] Total: 4.563401 | Recon: 1.393382 | Sim: 2.150027 | MMF: 1.599815
+[Epoch 9] Total: 4.532007 | Recon: 1.379117 | Sim: 2.143737 | MMF: 1.516581
+[Epoch 10] Total: 4.509540 | Recon: 1.370685 | Sim: 2.138596 | MMF: 1.448201
+[Epoch 11] Total: 4.487236 | Recon: 1.364508 | Sim: 2.131524 | MMF: 1.385949
+[Epoch 12] Total: 4.464500 | Recon: 1.361280 | Sim: 2.121598 | MMF: 1.329831
+[Epoch 13] Total: 4.454912 | Recon: 1.360974 | Sim: 2.116559 | MMF: 1.307555
+[Epoch 14] Total: 4.446334 | Recon: 1.360303 | Sim: 2.112837 | MMF: 1.280595
+[Epoch 15] Total: 4.439252 | Recon: 1.362963 | Sim: 2.110285 | MMF: 1.218904
+[Epoch 16] Total: 4.430755 | Recon: 1.364958 | Sim: 2.105844 | MMF: 1.176146
+[Epoch 17] Total: 4.428455 | Recon: 1.367034 | Sim: 2.102711 | MMF: 1.176266
+[Epoch 18] Total: 4.425772 | Recon: 1.370658 | Sim: 2.099684 | MMF: 1.155568
+[Epoch 19] Total: 4.418944 | Recon: 1.372898 | Sim: 2.096436 | MMF: 1.110367
+[Epoch 20] Total: 4.419879 | Recon: 1.378177 | Sim: 2.095639 | MMF: 1.078065
+[Epoch 21] Total: 4.421195 | Recon: 1.383421 | Sim: 2.093588 | MMF: 1.067510
+[Epoch 22] Total: 4.419537 | Recon: 1.387301 | Sim: 2.091030 | MMF: 1.047938
+[Epoch 23] Total: 4.420197 | Recon: 1.390536 | Sim: 2.090465 | MMF: 1.030098
+[Epoch 24] Total: 4.418466 | Recon: 1.395826 | Sim: 2.088826 | MMF: 0.982833
+[Epoch 25] Total: 4.422242 | Recon: 1.402221 | Sim: 2.086820 | MMF: 0.984739
+[Epoch 26] Total: 4.423594 | Recon: 1.406516 | Sim: 2.086708 | MMF: 0.956863
+[Epoch 27] Total: 4.429567 | Recon: 1.411820 | Sim: 2.086155 | MMF: 0.971297
+[Epoch 28] Total: 4.432802 | Recon: 1.417560 | Sim: 2.084602 | MMF: 0.967998
+[Epoch 29] Total: 4.429537 | Recon: 1.422351 | Sim: 2.083161 | MMF: 0.907594
+[Epoch 30] Total: 4.432318 | Recon: 1.429410 | Sim: 2.082272 | MMF: 0.877278
+[Epoch 31] Total: 4.436230 | Recon: 1.434288 | Sim: 2.081278 | MMF: 0.881531
+[Epoch 32] Total: 4.441508 | Recon: 1.439680 | Sim: 2.081219 | MMF: 0.881208
+[Epoch 33] Total: 4.443312 | Recon: 1.447148 | Sim: 2.079834 | MMF: 0.843968
+[Epoch 34] Total: 4.453927 | Recon: 1.453597 | Sim: 2.080514 | MMF: 0.876101
+[Epoch 35] Total: 4.455179 | Recon: 1.461119 | Sim: 2.079578 | MMF: 0.826511
+[Epoch 36] Total: 4.454409 | Recon: 1.466159 | Sim: 2.077952 | MMF: 0.791172
+[Epoch 37] Total: 4.465165 | Recon: 1.474191 | Sim: 2.079075 | MMF: 0.802697
+[Epoch 38] Total: 4.466357 | Recon: 1.481344 | Sim: 2.077157 | MMF: 0.769929
+[Epoch 39] Total: 4.477825 | Recon: 1.488085 | Sim: 2.076762 | MMF: 0.822738
+[Epoch 40] Total: 4.476504 | Recon: 1.494553 | Sim: 2.075909 | MMF: 0.756786
+[Epoch 41] Total: 4.483396 | Recon: 1.503276 | Sim: 2.074961 | MMF: 0.751749
+[Epoch 42] Total: 4.484826 | Recon: 1.508158 | Sim: 2.074639 | MMF: 0.721730
+[Epoch 43] Total: 4.494563 | Recon: 1.518221 | Sim: 2.074497 | MMF: 0.720471
+[Epoch 44] Total: 4.497751 | Recon: 1.523936 | Sim: 2.074400 | MMF: 0.696551
+[Epoch 45] Total: 4.503074 | Recon: 1.531370 | Sim: 2.074118 | MMF: 0.679398
+[Epoch 46] Total: 4.511268 | Recon: 1.539214 | Sim: 2.073108 | MMF: 0.697017
+[Epoch 47] Total: 4.513159 | Recon: 1.546275 | Sim: 2.072302 | MMF: 0.656617
+[Epoch 48] Total: 4.519836 | Recon: 1.554866 | Sim: 2.072534 | MMF: 0.634215
+[Epoch 49] Total: 4.527851 | Recon: 1.565769 | Sim: 2.071307 | MMF: 0.622523
+Part I training done
+--- 210.0458025932312 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 137.2459945678711 seconds
+Labelspreading takes 56.86097455024719 seconds
+Part II training done
+--- 237.24930477142334 seconds ---
+──────────────────────────────────────────
+Starting training for seed 3...
+Random seed set as 4
+Part I training started! Round 3
+[Epoch 0] Total: 6.157943 | Recon: 2.102464 | Sim: 2.522355 | MMF: 5.241809
+[Epoch 1] Total: 5.393398 | Recon: 1.791419 | Sim: 2.340226 | MMF: 3.256624
+[Epoch 2] Total: 5.122765 | Recon: 1.650020 | Sim: 2.295941 | MMF: 2.584283
+[Epoch 3] Total: 4.944992 | Recon: 1.563787 | Sim: 2.253616 | MMF: 2.261421
+[Epoch 4] Total: 4.807590 | Recon: 1.506291 | Sim: 2.208923 | MMF: 2.088075
+[Epoch 5] Total: 4.701613 | Recon: 1.462290 | Sim: 2.176725 | MMF: 1.919069
+[Epoch 6] Total: 4.630810 | Recon: 1.429921 | Sim: 2.160496 | MMF: 1.761955
+[Epoch 7] Total: 4.574126 | Recon: 1.405647 | Sim: 2.146664 | MMF: 1.631494
+[Epoch 8] Total: 4.540757 | Recon: 1.388479 | Sim: 2.140697 | MMF: 1.553031
+[Epoch 9] Total: 4.513166 | Recon: 1.377060 | Sim: 2.134408 | MMF: 1.479347
+[Epoch 10] Total: 4.487583 | Recon: 1.368494 | Sim: 2.129579 | MMF: 1.376784
+[Epoch 11] Total: 4.474252 | Recon: 1.364559 | Sim: 2.124087 | MMF: 1.359725
+[Epoch 12] Total: 4.458081 | Recon: 1.362199 | Sim: 2.119223 | MMF: 1.289690
+[Epoch 13] Total: 4.449311 | Recon: 1.359518 | Sim: 2.115654 | MMF: 1.278786
+[Epoch 14] Total: 4.439073 | Recon: 1.360766 | Sim: 2.112231 | MMF: 1.211834
+[Epoch 15] Total: 4.434436 | Recon: 1.361716 | Sim: 2.109298 | MMF: 1.197027
+[Epoch 16] Total: 4.428335 | Recon: 1.363982 | Sim: 2.107085 | MMF: 1.144341
+[Epoch 17] Total: 4.428478 | Recon: 1.367804 | Sim: 2.104554 | MMF: 1.142976
+[Epoch 18] Total: 4.421219 | Recon: 1.369907 | Sim: 2.100689 | MMF: 1.103482
+[Epoch 19] Total: 4.415811 | Recon: 1.373615 | Sim: 2.098565 | MMF: 1.042061
+[Epoch 20] Total: 4.416902 | Recon: 1.377242 | Sim: 2.098018 | MMF: 1.024345
+[Epoch 21] Total: 4.416257 | Recon: 1.381369 | Sim: 2.094517 | MMF: 1.025651
+[Epoch 22] Total: 4.418603 | Recon: 1.387315 | Sim: 2.092281 | MMF: 1.020946
+[Epoch 23] Total: 4.417891 | Recon: 1.391896 | Sim: 2.091828 | MMF: 0.974365
+[Epoch 24] Total: 4.419981 | Recon: 1.396138 | Sim: 2.090199 | MMF: 0.975642
+[Epoch 25] Total: 4.422555 | Recon: 1.401066 | Sim: 2.088985 | MMF: 0.969101
+[Epoch 26] Total: 4.421987 | Recon: 1.406385 | Sim: 2.087520 | MMF: 0.930746
+[Epoch 27] Total: 4.426494 | Recon: 1.411887 | Sim: 2.087408 | MMF: 0.922358
+[Epoch 28] Total: 4.426371 | Recon: 1.417287 | Sim: 2.085469 | MMF: 0.894281
+[Epoch 29] Total: 4.433732 | Recon: 1.423143 | Sim: 2.084798 | MMF: 0.918716
+[Epoch 30] Total: 4.433306 | Recon: 1.429262 | Sim: 2.083539 | MMF: 0.870898
+[Epoch 31] Total: 4.435653 | Recon: 1.435159 | Sim: 2.082493 | MMF: 0.850043
+[Epoch 32] Total: 4.439340 | Recon: 1.441735 | Sim: 2.081514 | MMF: 0.834847
+[Epoch 33] Total: 4.445709 | Recon: 1.447117 | Sim: 2.080670 | MMF: 0.856538
+[Epoch 34] Total: 4.449672 | Recon: 1.453076 | Sim: 2.079489 | MMF: 0.853123
+[Epoch 35] Total: 4.455922 | Recon: 1.461286 | Sim: 2.079488 | MMF: 0.833527
+[Epoch 36] Total: 4.453098 | Recon: 1.466247 | Sim: 2.077787 | MMF: 0.779493
+[Epoch 37] Total: 4.458333 | Recon: 1.473018 | Sim: 2.078086 | MMF: 0.759950
+[Epoch 38] Total: 4.464888 | Recon: 1.480850 | Sim: 2.076999 | MMF: 0.762386
+[Epoch 39] Total: 4.471541 | Recon: 1.487794 | Sim: 2.076869 | MMF: 0.761312
+[Epoch 40] Total: 4.475673 | Recon: 1.495915 | Sim: 2.075739 | MMF: 0.737224
+[Epoch 41] Total: 4.480273 | Recon: 1.501434 | Sim: 2.076346 | MMF: 0.719540
+[Epoch 42] Total: 4.485498 | Recon: 1.509329 | Sim: 2.074423 | MMF: 0.719770
+[Epoch 43] Total: 4.491718 | Recon: 1.516153 | Sim: 2.074391 | MMF: 0.714172
+[Epoch 44] Total: 4.490800 | Recon: 1.521933 | Sim: 2.073420 | MMF: 0.660798
+[Epoch 45] Total: 4.501615 | Recon: 1.532218 | Sim: 2.073524 | MMF: 0.664636
+[Epoch 46] Total: 4.508291 | Recon: 1.538960 | Sim: 2.071743 | MMF: 0.688906
+[Epoch 47] Total: 4.512974 | Recon: 1.546400 | Sim: 2.072784 | MMF: 0.646778
+[Epoch 48] Total: 4.521226 | Recon: 1.555544 | Sim: 2.072137 | MMF: 0.646900
+[Epoch 49] Total: 4.527192 | Recon: 1.563568 | Sim: 2.072258 | MMF: 0.624622
+Part I training done
+--- 175.09839510917664 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 231.0184464454651 seconds
+Labelspreading takes 65.3369197845459 seconds
+Part II training done
+--- 415.9038450717926 seconds ---
+──────────────────────────────────────────
+Starting training for seed 4...
+Random seed set as 5
+Part I training started! Round 4
+[Epoch 0] Total: 6.231691 | Recon: 2.090777 | Sim: 2.578709 | MMF: 5.307216
+[Epoch 1] Total: 5.479186 | Recon: 1.785991 | Sim: 2.394249 | MMF: 3.412469
+[Epoch 2] Total: 5.178023 | Recon: 1.647587 | Sim: 2.326696 | MMF: 2.730609
+[Epoch 3] Total: 5.007004 | Recon: 1.564498 | Sim: 2.295092 | MMF: 2.293776
+[Epoch 4] Total: 4.877947 | Recon: 1.508626 | Sim: 2.262271 | MMF: 2.021419
+[Epoch 5] Total: 4.750914 | Recon: 1.465381 | Sim: 2.209308 | MMF: 1.925032
+[Epoch 6] Total: 4.661868 | Recon: 1.430390 | Sim: 2.178574 | MMF: 1.814746
+[Epoch 7] Total: 4.610802 | Recon: 1.408259 | Sim: 2.161636 | MMF: 1.762524
+[Epoch 8] Total: 4.567912 | Recon: 1.390503 | Sim: 2.147344 | MMF: 1.711274
+[Epoch 9] Total: 4.531588 | Recon: 1.378574 | Sim: 2.141063 | MMF: 1.555263
+[Epoch 10] Total: 4.502504 | Recon: 1.368320 | Sim: 2.131722 | MMF: 1.497730
+[Epoch 11] Total: 4.484734 | Recon: 1.365219 | Sim: 2.127201 | MMF: 1.414335
+[Epoch 12] Total: 4.468065 | Recon: 1.361867 | Sim: 2.122508 | MMF: 1.346879
+[Epoch 13] Total: 4.461129 | Recon: 1.361526 | Sim: 2.120489 | MMF: 1.309189
+[Epoch 14] Total: 4.448811 | Recon: 1.360968 | Sim: 2.116146 | MMF: 1.252383
+[Epoch 15] Total: 4.443608 | Recon: 1.362017 | Sim: 2.113172 | MMF: 1.231500
+[Epoch 16] Total: 4.434633 | Recon: 1.364498 | Sim: 2.109208 | MMF: 1.172448
+[Epoch 17] Total: 4.437428 | Recon: 1.368199 | Sim: 2.107730 | MMF: 1.184068
+[Epoch 18] Total: 4.434801 | Recon: 1.371231 | Sim: 2.105313 | MMF: 1.161314
+[Epoch 19] Total: 4.430176 | Recon: 1.373728 | Sim: 2.103321 | MMF: 1.117992
+[Epoch 20] Total: 4.429876 | Recon: 1.378796 | Sim: 2.100871 | MMF: 1.098611
+[Epoch 21] Total: 4.429775 | Recon: 1.382385 | Sim: 2.099038 | MMF: 1.087371
+[Epoch 22] Total: 4.424830 | Recon: 1.385213 | Sim: 2.097694 | MMF: 1.028450
+[Epoch 23] Total: 4.426330 | Recon: 1.391357 | Sim: 2.095435 | MMF: 1.013641
+[Epoch 24] Total: 4.426810 | Recon: 1.395681 | Sim: 2.093914 | MMF: 0.996493
+[Epoch 25] Total: 4.432473 | Recon: 1.401801 | Sim: 2.091002 | MMF: 1.032687
+[Epoch 26] Total: 4.428236 | Recon: 1.406364 | Sim: 2.089851 | MMF: 0.960813
+[Epoch 27] Total: 4.428873 | Recon: 1.412245 | Sim: 2.088806 | MMF: 0.922999
+[Epoch 28] Total: 4.433416 | Recon: 1.418103 | Sim: 2.087130 | MMF: 0.933312
+[Epoch 29] Total: 4.441347 | Recon: 1.424335 | Sim: 2.085674 | MMF: 0.970681
+[Epoch 30] Total: 4.441021 | Recon: 1.429112 | Sim: 2.085323 | MMF: 0.924565
+[Epoch 31] Total: 4.442905 | Recon: 1.434057 | Sim: 2.084690 | MMF: 0.902820
+[Epoch 32] Total: 4.444900 | Recon: 1.440160 | Sim: 2.082554 | MMF: 0.891653
+[Epoch 33] Total: 4.447076 | Recon: 1.447324 | Sim: 2.082342 | MMF: 0.844725
+[Epoch 34] Total: 4.453929 | Recon: 1.452830 | Sim: 2.081604 | MMF: 0.868537
+[Epoch 35] Total: 4.454141 | Recon: 1.459534 | Sim: 2.079999 | MMF: 0.826082
+[Epoch 36] Total: 4.458630 | Recon: 1.467258 | Sim: 2.080037 | MMF: 0.793199
+[Epoch 37] Total: 4.469047 | Recon: 1.473266 | Sim: 2.079370 | MMF: 0.846619
+[Epoch 38] Total: 4.469274 | Recon: 1.478585 | Sim: 2.079389 | MMF: 0.795450
+[Epoch 39] Total: 4.475804 | Recon: 1.488152 | Sim: 2.078543 | MMF: 0.776912
+[Epoch 40] Total: 4.481861 | Recon: 1.494600 | Sim: 2.077510 | MMF: 0.787478
+[Epoch 41] Total: 4.486756 | Recon: 1.502674 | Sim: 2.077283 | MMF: 0.758859
+[Epoch 42] Total: 4.488446 | Recon: 1.508037 | Sim: 2.076417 | MMF: 0.734255
+[Epoch 43] Total: 4.496819 | Recon: 1.516463 | Sim: 2.076076 | MMF: 0.738489
+[Epoch 44] Total: 4.500780 | Recon: 1.523645 | Sim: 2.075303 | MMF: 0.717109
+[Epoch 45] Total: 4.505848 | Recon: 1.531812 | Sim: 2.074153 | MMF: 0.702219
+[Epoch 46] Total: 4.513445 | Recon: 1.537434 | Sim: 2.074511 | MMF: 0.716948
+[Epoch 47] Total: 4.517350 | Recon: 1.546336 | Sim: 2.073425 | MMF: 0.682193
+[Epoch 48] Total: 4.520717 | Recon: 1.554413 | Sim: 2.072716 | MMF: 0.645024
+[Epoch 49] Total: 4.530982 | Recon: 1.564240 | Sim: 2.073084 | MMF: 0.644250
+Part I training done
+--- 357.57715106010437 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 261.86861085891724 seconds
+Labelspreading takes 63.090325593948364 seconds
+Part II training done
+--- 407.59001302719116 seconds ---
+──────────────────────────────────────────
+Starting training for seed 5...
+Random seed set as 6
+Part I training started! Round 5
+[Epoch 0] Total: 6.349476 | Recon: 2.130525 | Sim: 2.589005 | MMF: 5.943431
+[Epoch 1] Total: 5.546875 | Recon: 1.824607 | Sim: 2.390272 | MMF: 3.758879
+[Epoch 2] Total: 5.195134 | Recon: 1.676677 | Sim: 2.305278 | MMF: 2.910688
+[Epoch 3] Total: 4.994572 | Recon: 1.578537 | Sim: 2.270016 | MMF: 2.380128
+[Epoch 4] Total: 4.864061 | Recon: 1.512707 | Sim: 2.242677 | MMF: 2.116062
+[Epoch 5] Total: 4.768017 | Recon: 1.471241 | Sim: 2.220433 | MMF: 1.881696
+[Epoch 6] Total: 4.699498 | Recon: 1.438045 | Sim: 2.202800 | MMF: 1.775331
+[Epoch 7] Total: 4.635372 | Recon: 1.416575 | Sim: 2.179703 | MMF: 1.672132
+[Epoch 8] Total: 4.573359 | Recon: 1.395083 | Sim: 2.156438 | MMF: 1.592624
+[Epoch 9] Total: 4.534010 | Recon: 1.381935 | Sim: 2.145889 | MMF: 1.478299
+[Epoch 10] Total: 4.506187 | Recon: 1.371424 | Sim: 2.136067 | MMF: 1.442697
+[Epoch 11] Total: 4.486350 | Recon: 1.368316 | Sim: 2.127742 | MMF: 1.391956
+[Epoch 12] Total: 4.469742 | Recon: 1.363965 | Sim: 2.124427 | MMF: 1.315788
+[Epoch 13] Total: 4.454083 | Recon: 1.361911 | Sim: 2.117899 | MMF: 1.271135
+[Epoch 14] Total: 4.445776 | Recon: 1.362756 | Sim: 2.113724 | MMF: 1.238059
+[Epoch 15] Total: 4.437298 | Recon: 1.363570 | Sim: 2.110885 | MMF: 1.184895
+[Epoch 16] Total: 4.431428 | Recon: 1.366588 | Sim: 2.106389 | MMF: 1.158949
+[Epoch 17] Total: 4.427299 | Recon: 1.367688 | Sim: 2.104185 | MMF: 1.137531
+[Epoch 18] Total: 4.426920 | Recon: 1.370784 | Sim: 2.102728 | MMF: 1.123173
+[Epoch 19] Total: 4.424127 | Recon: 1.374512 | Sim: 2.100463 | MMF: 1.089668
+[Epoch 20] Total: 4.419348 | Recon: 1.377974 | Sim: 2.098271 | MMF: 1.037949
+[Epoch 21] Total: 4.420716 | Recon: 1.382453 | Sim: 2.096198 | MMF: 1.035851
+[Epoch 22] Total: 4.423117 | Recon: 1.387054 | Sim: 2.094337 | MMF: 1.039914
+[Epoch 23] Total: 4.418738 | Recon: 1.390962 | Sim: 2.091977 | MMF: 0.990087
+[Epoch 24] Total: 4.420061 | Recon: 1.396339 | Sim: 2.091213 | MMF: 0.960241
+[Epoch 25] Total: 4.422379 | Recon: 1.401491 | Sim: 2.089422 | MMF: 0.956975
+[Epoch 26] Total: 4.427413 | Recon: 1.406293 | Sim: 2.087762 | MMF: 0.982534
+[Epoch 27] Total: 4.424784 | Recon: 1.411317 | Sim: 2.086407 | MMF: 0.924968
+[Epoch 28] Total: 4.432426 | Recon: 1.418404 | Sim: 2.086083 | MMF: 0.935062
+[Epoch 29] Total: 4.430880 | Recon: 1.422997 | Sim: 2.083911 | MMF: 0.904064
+[Epoch 30] Total: 4.431237 | Recon: 1.428005 | Sim: 2.082885 | MMF: 0.871936
+[Epoch 31] Total: 4.435534 | Recon: 1.434433 | Sim: 2.082582 | MMF: 0.854860
+[Epoch 32] Total: 4.438587 | Recon: 1.440504 | Sim: 2.081667 | MMF: 0.837489
+[Epoch 33] Total: 4.444224 | Recon: 1.446739 | Sim: 2.081285 | MMF: 0.836875
+[Epoch 34] Total: 4.449865 | Recon: 1.454049 | Sim: 2.080167 | MMF: 0.835824
+[Epoch 35] Total: 4.451740 | Recon: 1.460408 | Sim: 2.079930 | MMF: 0.794309
+[Epoch 36] Total: 4.458225 | Recon: 1.467146 | Sim: 2.078930 | MMF: 0.805772
+[Epoch 37] Total: 4.461530 | Recon: 1.473709 | Sim: 2.078310 | MMF: 0.781861
+[Epoch 38] Total: 4.467132 | Recon: 1.480739 | Sim: 2.076836 | MMF: 0.788222
+[Epoch 39] Total: 4.473600 | Recon: 1.487398 | Sim: 2.076892 | MMF: 0.785534
+[Epoch 40] Total: 4.476968 | Recon: 1.495690 | Sim: 2.076504 | MMF: 0.741722
+[Epoch 41] Total: 4.481607 | Recon: 1.501866 | Sim: 2.075721 | MMF: 0.737322
+[Epoch 42] Total: 4.485955 | Recon: 1.509194 | Sim: 2.075895 | MMF: 0.705077
+[Epoch 43] Total: 4.492296 | Recon: 1.515767 | Sim: 2.074836 | MMF: 0.717596
+[Epoch 44] Total: 4.495659 | Recon: 1.523142 | Sim: 2.074786 | MMF: 0.678164
+[Epoch 45] Total: 4.503459 | Recon: 1.532188 | Sim: 2.074002 | MMF: 0.676692
+[Epoch 46] Total: 4.506685 | Recon: 1.538665 | Sim: 2.073427 | MMF: 0.652213
+[Epoch 47] Total: 4.511840 | Recon: 1.545029 | Sim: 2.073262 | MMF: 0.642441
+[Epoch 48] Total: 4.522510 | Recon: 1.556148 | Sim: 2.072120 | MMF: 0.653942
+[Epoch 49] Total: 4.524400 | Recon: 1.562820 | Sim: 2.071865 | MMF: 0.609692
+Part I training done
+--- 277.9162073135376 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 138.6458785533905 seconds
+Labelspreading takes 56.63215112686157 seconds
+Part II training done
+--- 235.30012822151184 seconds ---
+──────────────────────────────────────────
+Starting training for seed 6...
+Random seed set as 7
+Part I training started! Round 6
+[Epoch 0] Total: 6.237431 | Recon: 2.132327 | Sim: 2.549008 | MMF: 5.364918
+[Epoch 1] Total: 5.447658 | Recon: 1.808203 | Sim: 2.350112 | MMF: 3.492981
+[Epoch 2] Total: 5.127051 | Recon: 1.656109 | Sim: 2.280215 | MMF: 2.786411
+[Epoch 3] Total: 4.912334 | Recon: 1.564763 | Sim: 2.218233 | MMF: 2.420442
+[Epoch 4] Total: 4.791227 | Recon: 1.506942 | Sim: 2.192871 | MMF: 2.142660
+[Epoch 5] Total: 4.706120 | Recon: 1.465466 | Sim: 2.174870 | MMF: 1.958356
+[Epoch 6] Total: 4.634730 | Recon: 1.433243 | Sim: 2.155565 | MMF: 1.836961
+[Epoch 7] Total: 4.577837 | Recon: 1.410108 | Sim: 2.144165 | MMF: 1.658977
+[Epoch 8] Total: 4.543600 | Recon: 1.391427 | Sim: 2.137063 | MMF: 1.602855
+[Epoch 9] Total: 4.514123 | Recon: 1.378159 | Sim: 2.131744 | MMF: 1.515228
+[Epoch 10] Total: 4.491691 | Recon: 1.369405 | Sim: 2.125765 | MMF: 1.462151
+[Epoch 11] Total: 4.472290 | Recon: 1.364253 | Sim: 2.123061 | MMF: 1.357519
+[Epoch 12] Total: 4.457375 | Recon: 1.360901 | Sim: 2.117923 | MMF: 1.313816
+[Epoch 13] Total: 4.449750 | Recon: 1.361083 | Sim: 2.113852 | MMF: 1.292739
+[Epoch 14] Total: 4.438970 | Recon: 1.361089 | Sim: 2.111359 | MMF: 1.219777
+[Epoch 15] Total: 4.434046 | Recon: 1.363731 | Sim: 2.108673 | MMF: 1.181722
+[Epoch 16] Total: 4.431063 | Recon: 1.365245 | Sim: 2.107475 | MMF: 1.153533
+[Epoch 17] Total: 4.425490 | Recon: 1.366982 | Sim: 2.104116 | MMF: 1.127467
+[Epoch 18] Total: 4.420853 | Recon: 1.369398 | Sim: 2.100886 | MMF: 1.102149
+[Epoch 19] Total: 4.427124 | Recon: 1.375353 | Sim: 2.099370 | MMF: 1.126530
+[Epoch 20] Total: 4.420197 | Recon: 1.378659 | Sim: 2.097032 | MMF: 1.056929
+[Epoch 21] Total: 4.423654 | Recon: 1.381781 | Sim: 2.095642 | MMF: 1.079739
+[Epoch 22] Total: 4.422879 | Recon: 1.387856 | Sim: 2.094034 | MMF: 1.033763
+[Epoch 23] Total: 4.423897 | Recon: 1.391414 | Sim: 2.092973 | MMF: 1.023207
+[Epoch 24] Total: 4.425527 | Recon: 1.398009 | Sim: 2.090963 | MMF: 1.001701
+[Epoch 25] Total: 4.426312 | Recon: 1.400567 | Sim: 2.090662 | MMF: 0.988189
+[Epoch 26] Total: 4.427923 | Recon: 1.407241 | Sim: 2.088313 | MMF: 0.970436
+[Epoch 27] Total: 4.433408 | Recon: 1.411982 | Sim: 2.088301 | MMF: 0.978036
+[Epoch 28] Total: 4.431468 | Recon: 1.417053 | Sim: 2.086507 | MMF: 0.933060
+[Epoch 29] Total: 4.434032 | Recon: 1.422917 | Sim: 2.085069 | MMF: 0.920186
+[Epoch 30] Total: 4.434210 | Recon: 1.427042 | Sim: 2.083662 | MMF: 0.900405
+[Epoch 31] Total: 4.444500 | Recon: 1.435846 | Sim: 2.083148 | MMF: 0.922466
+[Epoch 32] Total: 4.443954 | Recon: 1.441359 | Sim: 2.081998 | MMF: 0.877982
+[Epoch 33] Total: 4.447216 | Recon: 1.448749 | Sim: 2.081127 | MMF: 0.848895
+[Epoch 34] Total: 4.451341 | Recon: 1.452846 | Sim: 2.081448 | MMF: 0.844676
+[Epoch 35] Total: 4.451380 | Recon: 1.459467 | Sim: 2.080222 | MMF: 0.796035
+[Epoch 36] Total: 4.457413 | Recon: 1.466756 | Sim: 2.079100 | MMF: 0.799169
+[Epoch 37] Total: 4.463858 | Recon: 1.472698 | Sim: 2.079142 | MMF: 0.803613
+[Epoch 38] Total: 4.470332 | Recon: 1.481748 | Sim: 2.078958 | MMF: 0.780422
+[Epoch 39] Total: 4.475196 | Recon: 1.487002 | Sim: 2.078654 | MMF: 0.780784
+[Epoch 40] Total: 4.476668 | Recon: 1.495501 | Sim: 2.076764 | MMF: 0.736971
+[Epoch 41] Total: 4.481814 | Recon: 1.500839 | Sim: 2.076402 | MMF: 0.740129
+[Epoch 42] Total: 4.485924 | Recon: 1.508484 | Sim: 2.076405 | MMF: 0.704723
+[Epoch 43] Total: 4.488533 | Recon: 1.515225 | Sim: 2.074284 | MMF: 0.693116
+[Epoch 44] Total: 4.496363 | Recon: 1.523242 | Sim: 2.073929 | MMF: 0.696208
+[Epoch 45] Total: 4.504289 | Recon: 1.532336 | Sim: 2.074504 | MMF: 0.676472
+[Epoch 46] Total: 4.509142 | Recon: 1.538762 | Sim: 2.073120 | MMF: 0.680131
+[Epoch 47] Total: 4.516893 | Recon: 1.546032 | Sim: 2.074353 | MMF: 0.667661
+[Epoch 48] Total: 4.521774 | Recon: 1.554729 | Sim: 2.072779 | MMF: 0.651554
+[Epoch 49] Total: 4.533850 | Recon: 1.562564 | Sim: 2.072599 | MMF: 0.696463
+Part I training done
+--- 171.8084373474121 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 131.17653393745422 seconds
+Labelspreading takes 56.325411796569824 seconds
+Part II training done
+--- 229.41165685653687 seconds ---
+──────────────────────────────────────────
+Starting training for seed 7...
+Random seed set as 8
+Part I training started! Round 7
+[Epoch 0] Total: 6.284374 | Recon: 2.135487 | Sim: 2.563677 | MMF: 5.597395
+[Epoch 1] Total: 5.531957 | Recon: 1.802363 | Sim: 2.399260 | MMF: 3.706297
+[Epoch 2] Total: 5.210544 | Recon: 1.652576 | Sim: 2.334449 | MMF: 2.897392
+[Epoch 3] Total: 5.049182 | Recon: 1.573319 | Sim: 2.312353 | MMF: 2.385684
+[Epoch 4] Total: 4.940813 | Recon: 1.518051 | Sim: 2.294399 | MMF: 2.106035
+[Epoch 5] Total: 4.857136 | Recon: 1.475706 | Sim: 2.273983 | MMF: 1.978540
+[Epoch 6] Total: 4.782556 | Recon: 1.440083 | Sim: 2.258230 | MMF: 1.809517
+[Epoch 7] Total: 4.726722 | Recon: 1.412792 | Sim: 2.245145 | MMF: 1.707266
+[Epoch 8] Total: 4.660151 | Recon: 1.396646 | Sim: 2.208320 | MMF: 1.718562
+[Epoch 9] Total: 4.575227 | Recon: 1.383434 | Sim: 2.159381 | MMF: 1.686597
+[Epoch 10] Total: 4.535438 | Recon: 1.372879 | Sim: 2.144661 | MMF: 1.600325
+[Epoch 11] Total: 4.508173 | Recon: 1.368234 | Sim: 2.136852 | MMF: 1.483466
+[Epoch 12] Total: 4.485674 | Recon: 1.364292 | Sim: 2.130189 | MMF: 1.391182
+[Epoch 13] Total: 4.476878 | Recon: 1.363077 | Sim: 2.127030 | MMF: 1.359591
+[Epoch 14] Total: 4.461567 | Recon: 1.361864 | Sim: 2.120480 | MMF: 1.310316
+[Epoch 15] Total: 4.451804 | Recon: 1.363472 | Sim: 2.119275 | MMF: 1.213472
+[Epoch 16] Total: 4.444457 | Recon: 1.365997 | Sim: 2.114996 | MMF: 1.174663
+[Epoch 17] Total: 4.436589 | Recon: 1.366853 | Sim: 2.111368 | MMF: 1.138211
+[Epoch 18] Total: 4.436685 | Recon: 1.370784 | Sim: 2.107878 | MMF: 1.148721
+[Epoch 19] Total: 4.435414 | Recon: 1.375721 | Sim: 2.105988 | MMF: 1.113102
+[Epoch 20] Total: 4.431935 | Recon: 1.377739 | Sim: 2.103442 | MMF: 1.093762
+[Epoch 21] Total: 4.430755 | Recon: 1.381293 | Sim: 2.101709 | MMF: 1.070691
+[Epoch 22] Total: 4.426650 | Recon: 1.386295 | Sim: 2.099276 | MMF: 1.013689
+[Epoch 23] Total: 4.430274 | Recon: 1.388947 | Sim: 2.097296 | MMF: 1.051121
+[Epoch 24] Total: 4.429394 | Recon: 1.396988 | Sim: 2.095217 | MMF: 0.991019
+[Epoch 25] Total: 4.433739 | Recon: 1.401854 | Sim: 2.093471 | MMF: 1.010251
+[Epoch 26] Total: 4.430356 | Recon: 1.406242 | Sim: 2.090488 | MMF: 0.974299
+[Epoch 27] Total: 4.432209 | Recon: 1.411183 | Sim: 2.089731 | MMF: 0.954024
+[Epoch 28] Total: 4.434938 | Recon: 1.416776 | Sim: 2.088428 | MMF: 0.943622
+[Epoch 29] Total: 4.437375 | Recon: 1.424148 | Sim: 2.087111 | MMF: 0.912709
+[Epoch 30] Total: 4.437117 | Recon: 1.427700 | Sim: 2.084823 | MMF: 0.906645
+[Epoch 31] Total: 4.439770 | Recon: 1.434865 | Sim: 2.083910 | MMF: 0.874313
+[Epoch 32] Total: 4.444864 | Recon: 1.440770 | Sim: 2.083654 | MMF: 0.869787
+[Epoch 33] Total: 4.449025 | Recon: 1.447629 | Sim: 2.081781 | MMF: 0.869038
+[Epoch 34] Total: 4.450270 | Recon: 1.453906 | Sim: 2.081031 | MMF: 0.829204
+[Epoch 35] Total: 4.459601 | Recon: 1.460362 | Sim: 2.080758 | MMF: 0.861788
+[Epoch 36] Total: 4.471955 | Recon: 1.467491 | Sim: 2.081265 | MMF: 0.906931
+[Epoch 37] Total: 4.459831 | Recon: 1.472421 | Sim: 2.079498 | MMF: 0.761123
+[Epoch 38] Total: 4.465614 | Recon: 1.480007 | Sim: 2.078078 | MMF: 0.762984
+[Epoch 39] Total: 4.471713 | Recon: 1.486680 | Sim: 2.077742 | MMF: 0.761935
+[Epoch 40] Total: 4.477699 | Recon: 1.495114 | Sim: 2.076742 | MMF: 0.751465
+[Epoch 41] Total: 4.481349 | Recon: 1.500534 | Sim: 2.076713 | MMF: 0.734169
+[Epoch 42] Total: 4.492254 | Recon: 1.509200 | Sim: 2.076001 | MMF: 0.766516
+[Epoch 43] Total: 4.490377 | Recon: 1.515299 | Sim: 2.076113 | MMF: 0.685190
+[Epoch 44] Total: 4.496664 | Recon: 1.523656 | Sim: 2.073814 | MMF: 0.696683
+[Epoch 45] Total: 4.502821 | Recon: 1.531720 | Sim: 2.074728 | MMF: 0.664812
+[Epoch 46] Total: 4.509192 | Recon: 1.538002 | Sim: 2.073966 | MMF: 0.676371
+[Epoch 47] Total: 4.516527 | Recon: 1.546120 | Sim: 2.072856 | MMF: 0.684097
+[Epoch 48] Total: 4.522577 | Recon: 1.554460 | Sim: 2.072509 | MMF: 0.666043
+[Epoch 49] Total: 4.528378 | Recon: 1.562422 | Sim: 2.072347 | MMF: 0.646714
+Part I training done
+--- 170.96294164657593 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 130.37283492088318 seconds
+Labelspreading takes 56.525877475738525 seconds
+Part II training done
+--- 228.30377292633057 seconds ---
+──────────────────────────────────────────
+Starting training for seed 8...
+Random seed set as 9
+Part I training started! Round 8
+[Epoch 0] Total: 6.280458 | Recon: 2.116016 | Sim: 2.588623 | MMF: 5.403694
+[Epoch 1] Total: 5.437913 | Recon: 1.792812 | Sim: 2.372442 | MMF: 3.236825
+[Epoch 2] Total: 5.153831 | Recon: 1.656108 | Sim: 2.314122 | MMF: 2.579524
+[Epoch 3] Total: 4.996644 | Recon: 1.572756 | Sim: 2.287198 | MMF: 2.218101
+[Epoch 4] Total: 4.881303 | Recon: 1.513405 | Sim: 2.261907 | MMF: 2.012270
+[Epoch 5] Total: 4.798340 | Recon: 1.471017 | Sim: 2.243924 | MMF: 1.858292
+[Epoch 6] Total: 4.726156 | Recon: 1.439222 | Sim: 2.218499 | MMF: 1.810358
+[Epoch 7] Total: 4.630948 | Recon: 1.415547 | Sim: 2.169290 | MMF: 1.783949
+[Epoch 8] Total: 4.570122 | Recon: 1.396462 | Sim: 2.150036 | MMF: 1.636097
+[Epoch 9] Total: 4.535135 | Recon: 1.383939 | Sim: 2.139115 | MMF: 1.564347
+[Epoch 10] Total: 4.507644 | Recon: 1.374556 | Sim: 2.131893 | MMF: 1.484372
+[Epoch 11] Total: 4.484521 | Recon: 1.366501 | Sim: 2.125749 | MMF: 1.419713
+[Epoch 12] Total: 4.471329 | Recon: 1.365157 | Sim: 2.121444 | MMF: 1.361512
+[Epoch 13] Total: 4.458021 | Recon: 1.362495 | Sim: 2.115758 | MMF: 1.334651
+[Epoch 14] Total: 4.449780 | Recon: 1.362787 | Sim: 2.114519 | MMF: 1.266659
+[Epoch 15] Total: 4.437968 | Recon: 1.361760 | Sim: 2.110523 | MMF: 1.214764
+[Epoch 16] Total: 4.438952 | Recon: 1.365501 | Sim: 2.108865 | MMF: 1.210405
+[Epoch 17] Total: 4.431971 | Recon: 1.368416 | Sim: 2.105663 | MMF: 1.156277
+[Epoch 18] Total: 4.428673 | Recon: 1.371307 | Sim: 2.102633 | MMF: 1.136811
+[Epoch 19] Total: 4.425820 | Recon: 1.374245 | Sim: 2.099650 | MMF: 1.120650
+[Epoch 20] Total: 4.423610 | Recon: 1.378877 | Sim: 2.097164 | MMF: 1.087048
+[Epoch 21] Total: 4.421564 | Recon: 1.382164 | Sim: 2.094953 | MMF: 1.064659
+[Epoch 22] Total: 4.422826 | Recon: 1.385283 | Sim: 2.094376 | MMF: 1.054176
+[Epoch 23] Total: 4.422323 | Recon: 1.390630 | Sim: 2.092562 | MMF: 1.021057
+[Epoch 24] Total: 4.420257 | Recon: 1.396710 | Sim: 2.089796 | MMF: 0.978321
+[Epoch 25] Total: 4.425970 | Recon: 1.402141 | Sim: 2.089159 | MMF: 0.990072
+[Epoch 26] Total: 4.428628 | Recon: 1.406902 | Sim: 2.088414 | MMF: 0.979456
+[Epoch 27] Total: 4.431035 | Recon: 1.411059 | Sim: 2.087282 | MMF: 0.977805
+[Epoch 28] Total: 4.428931 | Recon: 1.418314 | Sim: 2.085206 | MMF: 0.913289
+[Epoch 29] Total: 4.440230 | Recon: 1.424213 | Sim: 2.084555 | MMF: 0.976400
+[Epoch 30] Total: 4.437690 | Recon: 1.429277 | Sim: 2.083163 | MMF: 0.919856
+[Epoch 31] Total: 4.439013 | Recon: 1.433853 | Sim: 2.082931 | MMF: 0.890558
+[Epoch 32] Total: 4.445104 | Recon: 1.440485 | Sim: 2.081833 | MMF: 0.900522
+[Epoch 33] Total: 4.446678 | Recon: 1.448214 | Sim: 2.080270 | MMF: 0.860857
+[Epoch 34] Total: 4.452036 | Recon: 1.454463 | Sim: 2.080078 | MMF: 0.854636
+[Epoch 35] Total: 4.459213 | Recon: 1.460960 | Sim: 2.079759 | MMF: 0.865907
+[Epoch 36] Total: 4.460265 | Recon: 1.466878 | Sim: 2.079151 | MMF: 0.825761
+[Epoch 37] Total: 4.463936 | Recon: 1.472975 | Sim: 2.077684 | MMF: 0.822033
+[Epoch 38] Total: 4.470568 | Recon: 1.479637 | Sim: 2.078308 | MMF: 0.812990
+[Epoch 39] Total: 4.476578 | Recon: 1.485918 | Sim: 2.077773 | MMF: 0.817774
+[Epoch 40] Total: 4.479830 | Recon: 1.493289 | Sim: 2.076796 | MMF: 0.790263
+[Epoch 41] Total: 4.482181 | Recon: 1.502369 | Sim: 2.075940 | MMF: 0.734953
+[Epoch 42] Total: 4.489526 | Recon: 1.506907 | Sim: 2.076569 | MMF: 0.754224
+[Epoch 43] Total: 4.498846 | Recon: 1.517233 | Sim: 2.076223 | MMF: 0.749006
+[Epoch 44] Total: 4.502198 | Recon: 1.523790 | Sim: 2.075294 | MMF: 0.729971
+[Epoch 45] Total: 4.512979 | Recon: 1.532085 | Sim: 2.075417 | MMF: 0.753099
+[Epoch 46] Total: 4.512983 | Recon: 1.538771 | Sim: 2.074374 | MMF: 0.700884
+[Epoch 47] Total: 4.517820 | Recon: 1.545914 | Sim: 2.074597 | MMF: 0.674701
+[Epoch 48] Total: 4.526058 | Recon: 1.554645 | Sim: 2.073244 | MMF: 0.688709
+[Epoch 49] Total: 4.530450 | Recon: 1.561628 | Sim: 2.073146 | MMF: 0.664170
+Part I training done
+--- 171.35013055801392 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 129.02281618118286 seconds
+Labelspreading takes 56.035595655441284 seconds
+Part II training done
+--- 226.83150792121887 seconds ---
+──────────────────────────────────────────
+Starting training for seed 9...
+Random seed set as 10
+Part I training started! Round 9
+[Epoch 0] Total: 6.216094 | Recon: 2.109744 | Sim: 2.544231 | MMF: 5.444264
+[Epoch 1] Total: 5.399884 | Recon: 1.794504 | Sim: 2.336536 | MMF: 3.342288
+[Epoch 2] Total: 5.089542 | Recon: 1.653071 | Sim: 2.253117 | MMF: 2.821080
+[Epoch 3] Total: 4.887611 | Recon: 1.558947 | Sim: 2.206159 | MMF: 2.400419
+[Epoch 4] Total: 4.769157 | Recon: 1.499735 | Sim: 2.183510 | MMF: 2.125072
+[Epoch 5] Total: 4.688694 | Recon: 1.459343 | Sim: 2.168130 | MMF: 1.939693
+[Epoch 6] Total: 4.622473 | Recon: 1.425988 | Sim: 2.155638 | MMF: 1.785921
+[Epoch 7] Total: 4.574944 | Recon: 1.402656 | Sim: 2.146067 | MMF: 1.677934
+[Epoch 8] Total: 4.540030 | Recon: 1.385887 | Sim: 2.140843 | MMF: 1.569638
+[Epoch 9] Total: 4.510476 | Recon: 1.374074 | Sim: 2.132129 | MMF: 1.514213
+[Epoch 10] Total: 4.489424 | Recon: 1.365078 | Sim: 2.128107 | MMF: 1.449958
+[Epoch 11] Total: 4.470538 | Recon: 1.360340 | Sim: 2.123230 | MMF: 1.376755
+[Epoch 12] Total: 4.462269 | Recon: 1.358837 | Sim: 2.118275 | MMF: 1.378473
+[Epoch 13] Total: 4.447094 | Recon: 1.357023 | Sim: 2.113076 | MMF: 1.317655
+[Epoch 14] Total: 4.440746 | Recon: 1.357503 | Sim: 2.110985 | MMF: 1.278640
+[Epoch 15] Total: 4.432937 | Recon: 1.359138 | Sim: 2.107066 | MMF: 1.239061
+[Epoch 16] Total: 4.429191 | Recon: 1.362769 | Sim: 2.104199 | MMF: 1.205434
+[Epoch 17] Total: 4.426600 | Recon: 1.364792 | Sim: 2.102056 | MMF: 1.189289
+[Epoch 18] Total: 4.419038 | Recon: 1.367959 | Sim: 2.099839 | MMF: 1.113042
+[Epoch 19] Total: 4.418483 | Recon: 1.371985 | Sim: 2.097799 | MMF: 1.095793
+[Epoch 20] Total: 4.417302 | Recon: 1.375341 | Sim: 2.095548 | MMF: 1.081941
+[Epoch 21] Total: 4.417342 | Recon: 1.381011 | Sim: 2.092199 | MMF: 1.072525
+[Epoch 22] Total: 4.422047 | Recon: 1.385917 | Sim: 2.091969 | MMF: 1.073731
+[Epoch 23] Total: 4.422122 | Recon: 1.390086 | Sim: 2.090368 | MMF: 1.055216
+[Epoch 24] Total: 4.419060 | Recon: 1.395565 | Sim: 2.089328 | MMF: 0.984353
+[Epoch 25] Total: 4.424989 | Recon: 1.399388 | Sim: 2.087850 | MMF: 1.026121
+[Epoch 26] Total: 4.421188 | Recon: 1.404956 | Sim: 2.086394 | MMF: 0.952809
+[Epoch 27] Total: 4.425665 | Recon: 1.410213 | Sim: 2.084819 | MMF: 0.967048
+[Epoch 28] Total: 4.429663 | Recon: 1.415184 | Sim: 2.085027 | MMF: 0.954416
+[Epoch 29] Total: 4.434023 | Recon: 1.422066 | Sim: 2.084381 | MMF: 0.938233
+[Epoch 30] Total: 4.438830 | Recon: 1.427721 | Sim: 2.083216 | MMF: 0.946068
+[Epoch 31] Total: 4.436353 | Recon: 1.432949 | Sim: 2.083026 | MMF: 0.871682
+[Epoch 32] Total: 4.443933 | Recon: 1.439993 | Sim: 2.082676 | MMF: 0.881942
+[Epoch 33] Total: 4.444621 | Recon: 1.445941 | Sim: 2.080652 | MMF: 0.857669
+[Epoch 34] Total: 4.450104 | Recon: 1.452469 | Sim: 2.080520 | MMF: 0.849073
+[Epoch 35] Total: 4.457118 | Recon: 1.458294 | Sim: 2.080150 | MMF: 0.866139
+[Epoch 36] Total: 4.455604 | Recon: 1.464864 | Sim: 2.078690 | MMF: 0.805749
+[Epoch 37] Total: 4.462534 | Recon: 1.472050 | Sim: 2.078952 | MMF: 0.799521
+[Epoch 38] Total: 4.465788 | Recon: 1.479704 | Sim: 2.077742 | MMF: 0.772458
+[Epoch 39] Total: 4.479378 | Recon: 1.486218 | Sim: 2.078158 | MMF: 0.837391
+[Epoch 40] Total: 4.476861 | Recon: 1.493641 | Sim: 2.076854 | MMF: 0.756239
+[Epoch 41] Total: 4.481916 | Recon: 1.500947 | Sim: 2.076675 | MMF: 0.736243
+[Epoch 42] Total: 4.487019 | Recon: 1.508682 | Sim: 2.076270 | MMF: 0.715595
+[Epoch 43] Total: 4.493428 | Recon: 1.514618 | Sim: 2.076937 | MMF: 0.710967
+[Epoch 44] Total: 4.502641 | Recon: 1.524580 | Sim: 2.075389 | MMF: 0.725162
+[Epoch 45] Total: 4.506254 | Recon: 1.531094 | Sim: 2.074959 | MMF: 0.702178
+[Epoch 46] Total: 4.512120 | Recon: 1.538302 | Sim: 2.074903 | MMF: 0.689544
+[Epoch 47] Total: 4.519530 | Recon: 1.546637 | Sim: 2.074568 | MMF: 0.684975
+[Epoch 48] Total: 4.524943 | Recon: 1.554908 | Sim: 2.073913 | MMF: 0.665569
+[Epoch 49] Total: 4.528110 | Recon: 1.563192 | Sim: 2.072514 | MMF: 0.633988
+Part I training done
+--- 171.4815514087677 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 130.15564680099487 seconds
+Labelspreading takes 55.86118221282959 seconds
+Part II training done
+--- 231.07709956169128 seconds ---
+──────────────────────────────────────────
+Starting training for seed 10...
+Random seed set as 11
+Part I training started! Round 10
+[Epoch 0] Total: 6.277528 | Recon: 2.111320 | Sim: 2.593483 | MMF: 5.353310
+[Epoch 1] Total: 5.457599 | Recon: 1.793691 | Sim: 2.372278 | MMF: 3.427181
+[Epoch 2] Total: 5.172321 | Recon: 1.650639 | Sim: 2.321569 | MMF: 2.714863
+[Epoch 3] Total: 5.014448 | Recon: 1.564117 | Sim: 2.295201 | MMF: 2.370504
+[Epoch 4] Total: 4.908111 | Recon: 1.507726 | Sim: 2.277913 | MMF: 2.113066
+[Epoch 5] Total: 4.819787 | Recon: 1.468731 | Sim: 2.259164 | MMF: 1.882265
+[Epoch 6] Total: 4.754174 | Recon: 1.437481 | Sim: 2.243615 | MMF: 1.756324
+[Epoch 7] Total: 4.672042 | Recon: 1.413424 | Sim: 2.198603 | MMF: 1.805744
+[Epoch 8] Total: 4.592146 | Recon: 1.394751 | Sim: 2.159287 | MMF: 1.743933
+[Epoch 9] Total: 4.548125 | Recon: 1.382799 | Sim: 2.147018 | MMF: 1.595007
+[Epoch 10] Total: 4.521148 | Recon: 1.374207 | Sim: 2.138398 | MMF: 1.531841
+[Epoch 11] Total: 4.494463 | Recon: 1.368206 | Sim: 2.132031 | MMF: 1.414130
+[Epoch 12] Total: 4.483629 | Recon: 1.365296 | Sim: 2.125777 | MMF: 1.422461
+[Epoch 13] Total: 4.466463 | Recon: 1.364406 | Sim: 2.120862 | MMF: 1.328498
+[Epoch 14] Total: 4.453065 | Recon: 1.360989 | Sim: 2.116798 | MMF: 1.285576
+[Epoch 15] Total: 4.443811 | Recon: 1.362692 | Sim: 2.111896 | MMF: 1.244646
+[Epoch 16] Total: 4.439349 | Recon: 1.364256 | Sim: 2.109033 | MMF: 1.224472
+[Epoch 17] Total: 4.434544 | Recon: 1.367464 | Sim: 2.105424 | MMF: 1.194860
+[Epoch 18] Total: 4.426816 | Recon: 1.370832 | Sim: 2.103027 | MMF: 1.117463
+[Epoch 19] Total: 4.428171 | Recon: 1.374378 | Sim: 2.100118 | MMF: 1.136283
+[Epoch 20] Total: 4.425571 | Recon: 1.379116 | Sim: 2.097623 | MMF: 1.097834
+[Epoch 21] Total: 4.422556 | Recon: 1.381932 | Sim: 2.095892 | MMF: 1.063748
+[Epoch 22] Total: 4.424592 | Recon: 1.387468 | Sim: 2.093053 | MMF: 1.068508
+[Epoch 23] Total: 4.424592 | Recon: 1.391208 | Sim: 2.091249 | MMF: 1.056360
+[Epoch 24] Total: 4.422458 | Recon: 1.395645 | Sim: 2.090493 | MMF: 1.001227
+[Epoch 25] Total: 4.422186 | Recon: 1.401517 | Sim: 2.088469 | MMF: 0.968123
+[Epoch 26] Total: 4.427936 | Recon: 1.407388 | Sim: 2.087369 | MMF: 0.982305
+[Epoch 27] Total: 4.428980 | Recon: 1.412464 | Sim: 2.085457 | MMF: 0.968766
+[Epoch 28] Total: 4.431481 | Recon: 1.417837 | Sim: 2.084732 | MMF: 0.950191
+[Epoch 29] Total: 4.430077 | Recon: 1.422505 | Sim: 2.084465 | MMF: 0.893215
+[Epoch 30] Total: 4.436064 | Recon: 1.429625 | Sim: 2.082675 | MMF: 0.906944
+[Epoch 31] Total: 4.438458 | Recon: 1.435706 | Sim: 2.081111 | MMF: 0.891971
+[Epoch 32] Total: 4.438003 | Recon: 1.441196 | Sim: 2.080015 | MMF: 0.847871
+[Epoch 33] Total: 4.442595 | Recon: 1.447514 | Sim: 2.080701 | MMF: 0.820989
+[Epoch 34] Total: 4.447277 | Recon: 1.453596 | Sim: 2.079763 | MMF: 0.820130
+[Epoch 35] Total: 4.450906 | Recon: 1.459346 | Sim: 2.077971 | MMF: 0.823995
+[Epoch 36] Total: 4.458712 | Recon: 1.466664 | Sim: 2.077991 | MMF: 0.828601
+[Epoch 37] Total: 4.461641 | Recon: 1.473589 | Sim: 2.077500 | MMF: 0.795518
+[Epoch 38] Total: 4.468012 | Recon: 1.480552 | Sim: 2.076794 | MMF: 0.799489
+[Epoch 39] Total: 4.471335 | Recon: 1.487049 | Sim: 2.076143 | MMF: 0.776854
+[Epoch 40] Total: 4.478078 | Recon: 1.494571 | Sim: 2.076025 | MMF: 0.770722
+[Epoch 41] Total: 4.480754 | Recon: 1.501465 | Sim: 2.075301 | MMF: 0.738680
+[Epoch 42] Total: 4.489493 | Recon: 1.509598 | Sim: 2.075160 | MMF: 0.746714
+[Epoch 43] Total: 4.489631 | Recon: 1.516930 | Sim: 2.073448 | MMF: 0.698741
+[Epoch 44] Total: 4.500047 | Recon: 1.524982 | Sim: 2.073423 | MMF: 0.722736
+[Epoch 45] Total: 4.505057 | Recon: 1.531289 | Sim: 2.073344 | MMF: 0.710870
+[Epoch 46] Total: 4.510144 | Recon: 1.539982 | Sim: 2.072235 | MMF: 0.690329
+[Epoch 47] Total: 4.511504 | Recon: 1.545976 | Sim: 2.071897 | MMF: 0.648726
+[Epoch 48] Total: 4.520218 | Recon: 1.554397 | Sim: 2.071318 | MMF: 0.659773
+[Epoch 49] Total: 4.530407 | Recon: 1.562895 | Sim: 2.071880 | MMF: 0.668799
+Part I training done
+--- 171.7908775806427 seconds ---
+Step2 started!
+Cells more than 100k, use the faster version!
+UMAPing takes 130.17298936843872 seconds
+Labelspreading takes 56.59280490875244 seconds
+Part II training done
+--- 232.086323261261 seconds ---
+Loading seed 1
+Loading seed 2
+Loading seed 3
+Loading seed 4
+Loading seed 5
+Loading seed 6
+Loading seed 7
+Loading seed 8
+Loading seed 9
+Loading seed 10
+Saving voted seed 1
+Saving voted seed 2
+Saving voted seed 3
+Saving voted seed 4
+Saving voted seed 5
+Saving voted seed 6
+Saving voted seed 7
+Saving voted seed 8
+Saving voted seed 9
+Saving voted seed 10
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metrics_df</span> <span class="o">=</span> <span class="n">NovAST_evaluation</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Evaluation mode detected. Processing 2 seeds...
+
+──────────────────────────────────────────
+Starting evaluation for seed 1...
+Random seed set as 2
+Generating UMAP plot with ground truth...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_evaluation_19_1.png" src="_images/demo_evaluation_19_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+UMAP plot saved.
+Generating spatial plot (region key = slice)...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_evaluation_19_3.png" src="_images/demo_evaluation_19_3.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Spatial plot saved.
+
+──────────────────────────────────────────
+Starting evaluation for seed 2...
+Random seed set as 3
+Generating UMAP plot with ground truth...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_evaluation_19_5.png" src="_images/demo_evaluation_19_5.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+UMAP plot saved.
+Generating spatial plot (region key = slice)...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo_evaluation_19_7.png" src="_images/demo_evaluation_19_7.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Spatial plot saved.
+
+──────────────────────────────────────────
+All seeds processed. Computing aggregated metrics...
+
+Mapping relationship: {&#39;novel1&#39;: &#39;l2_3_it&#39;}
+Mapping relationship: {&#39;novel1&#39;: &#39;l2_3_it&#39;}
+
+========== Mean Metrics Across Seeds ==========
+accuracy       0.9106
+weighted_F1    0.9159
+ARI            0.7979
+macro_F1       0.8363
+dtype: float64
+==============================================
+
+</pre></div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="demo_exploration.html" class="btn btn-neutral float-left" title="NovAST Tutorial on Exploration Mode" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yu Zhu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

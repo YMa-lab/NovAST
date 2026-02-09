@@ -56,9 +56,5 @@ Running the following line of code will generate UMAP visualizations as well as 
 NovAST_plot(args)
 ```
 
-## Demo
-NovAST provides two operation modes:
-- **Exploration mode** — recommended for applying NovAST on new datasets **without ground-truth labels** in the target dataset.
-- **Evaluation mode** — reproduces the benchmarking pipeline used in the manuscript (requires ground-truth labels).
-
-Below, we provide separate, step-by-step demos illustrating the workflow and expected outputs for each mode.
+## Tutorials
+We further provides the tutorials on the datasets presented in the main figures in the manuscript.

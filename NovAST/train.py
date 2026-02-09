@@ -1,5 +1,7 @@
 import os
 from itertools import cycle
+import logging
+from tqdm.auto import tqdm
 
 import torch
 import torch.nn as nn
@@ -11,14 +13,26 @@ from torch.cuda.amp import autocast
 from . import models
 
 class NovAST_train:
-    def __init__(self, args, dataset):
+    def __init__(self, args, dataset, filepath):
         self.args = args
         self.dataset = dataset
         args.input_dim = dataset.unlabeled_data.x.shape[-1]
         self.model = models.AE(x_dim = args.input_dim, latent_dim = args.latent_dim, hidden_dims=args.hidden_dims, dropout=args.dropout)
         self.model = self.model.to(self.args.device)
-        self.savedir = os.path.join(args.savedir, args.dataset)
+        self.savedir =filepath
         self.scaler = torch.cuda.amp.GradScaler(enabled=(self.args.device.type == 'cuda'))
+
+        self.log_path = os.path.join(self.savedir, "training.log")
+        logging.basicConfig(
+            filename=self.log_path,
+            filemode="w",
+            level=logging.INFO,
+            format="%(asctime)s | %(levelname)s | %(message)s",
+            force=True,
+        )
+        self.logger = logging.getLogger("NovAST")  # or __name__
+        self.logger.info("Logger initialized.")
+        self.logger.info(f"Log file: {self.log_path}")
 
     def pred_supervised(self, model, data, device):
         model.eval()
@@ -70,10 +84,11 @@ class NovAST_train:
         avg_mmf = sum_mmf / n_batches
 
         # Print
-        print(f"[Epoch {epoch}] Total: {avg_loss:.6f} | Recon: {avg_recons:.6f} | "
-            f"Sim: {avg_sim:.6f} | MMF: {avg_mmf:.6f}")
-
-        return loss_dict
+        self.logger.info(
+            f"[Epoch {epoch}] Total={avg_loss:.6f} Recon={avg_recons:.6f} "
+            f"Sim={avg_sim:.6f} MMF={avg_mmf:.6f}"
+        )
+        return {"loss": avg_loss, "Reconstruction_Loss": avg_recons, "Similarity_Loss": avg_sim, "MMF_Loss": avg_mmf,}
 
     def pred(self, data):
         self.model.eval()
@@ -103,13 +118,15 @@ class NovAST_train:
         
         ## train the vae with similarity loss
         optimizer = optim.Adam(self.model.parameters(), lr=self.args.lr, weight_decay=self.args.wd)
-        for epoch in range(self.args.epochs):
+
+        pbar = tqdm(range(self.args.epochs), desc="Training")
+        for epoch in pbar:
             train_fn = self.train_epoch
             loss_dict = train_fn(self.args, self.model, self.args.device, self.dataset, optimizer, epoch)
-            total_losses.append(loss_dict['loss'].item())
-            recons_losses.append(loss_dict['Reconstruction_Loss'].item())
-            sim_losses.append(loss_dict['Similarity_Loss'].item())
-            mmf_losses.append(loss_dict['MMF_Loss'].item())
+            total_losses.append(loss_dict['loss'])
+            recons_losses.append(loss_dict['Reconstruction_Loss'])
+            sim_losses.append(loss_dict['Similarity_Loss'])
+            mmf_losses.append(loss_dict['MMF_Loss'])
         
         labeled_data, unlabeled_data = self.dataset.labeled_data, self.dataset.unlabeled_data
         pred_fn = self.pred
@@ -117,5 +134,7 @@ class NovAST_train:
         _,z_test = pred_fn(unlabeled_data)
         
         model_cpu = self.model.to('cpu')
+        self.logger.info("Training finished.")
+        self.logger.info(f"Saved log at: {self.log_path}")
         
         return [z_train, z_test, total_losses, recons_losses, sim_losses, mmf_losses, model_cpu]

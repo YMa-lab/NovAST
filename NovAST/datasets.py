@@ -107,9 +107,10 @@ def load_dataset_adata(args, adata_train, adata_test):
 
     # If remove_celltype=True, remove selected labels from TRAIN only ---
     if args.remove_celltype:
-        to_move = select_cell_type_to_move(args.remove_celltype_type, adata_test, args.celltype_name_test)
+        to_move = select_cell_type_to_move(args.remove_celltype_type, adata_test, args.celltype_name_test_select)
+
         adata_train = adata_train[
-            ~adata_train.obs[args.celltype_name_train].isin(to_move)
+            ~adata_train.obs[args.celltype_name_train_select].isin(to_move)
         ].copy()
         print("Removed from TRAIN:", to_move)
 

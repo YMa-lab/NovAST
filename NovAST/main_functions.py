@@ -30,7 +30,7 @@ def load_paired_dataset(adata_train, adata_test, args):
 def training_model(seed, args, dataset, labeled_y, unlabeled_y, filepath):
     start_time = time.time()
     print(f"Part I training started! Round {seed}")
-    novaset = NovAST_train(args, dataset)
+    novaset = NovAST_train(args, dataset, filepath)
     z_train, z_test, total_losses, recons_losses, sim_losses, mmf_losses, model_cpu = novaset.train()
     torch.save(model_cpu, os.path.join(filepath, 'model.pth'))
     

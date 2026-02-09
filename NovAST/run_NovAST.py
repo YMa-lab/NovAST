@@ -24,6 +24,12 @@ warnings.filterwarnings("ignore", category=pd.errors.SettingWithCopyWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 
+import logging
+
+logging.getLogger("anndata").setLevel(logging.ERROR)
+logging.getLogger("scanpy").setLevel(logging.ERROR)
+
+
 def set_seed(seed: int = 42) -> None:
     np.random.seed(seed)
     random.seed(seed)
@@ -81,6 +87,13 @@ def run_NovAST(config_file="default_config.yaml", **override_kwargs):
     if "evaluation" in args.training_mode: # check testing if in the evaluation mode
         if args.celltype_name_test not in adata_test.obs.columns:
             raise ValueError(f"{args.celltype_name_test} not found in testing dataset obs.")
+
+    if args.celltype_name_train_select == "None": # select removed gene given 'celltype_name_train/test' if not further specified
+        args.celltype_name_train_select = args.celltype_name_train
+    if args.celltype_name_test_select == "None":
+        args.celltype_name_test_select = args.celltype_name_test
+    
+    print(args.celltype_name_train_select)
 
     has_spatial_train, train_loc = detect_spatial_info(adata_train)
     has_spatial_test, test_loc = detect_spatial_info(adata_test)
@@ -152,6 +165,10 @@ def NovAST_plot(args):
         print(f"Exploration mode detected. Generating plots for {args.rounds} seeds...\n")
 
         for i in range(1, args.rounds+1):
+            if i == 1:
+                show = True
+            else:
+                show = False
             print(f"──────────────────────────────────────────")
             print(f"Starting plotting for seed {i}...")
 
@@ -160,11 +177,11 @@ def NovAST_plot(args):
             adata_all, adata_unlabeled = load_exist_data_exploration(args, filedic)
 
             print(f"Generating UMAP plot...")
-            plot_umap(adata_all, adata_unlabeled, filedic)
+            plot_umap(adata_all, adata_unlabeled, save_path=filedic, show=show)
             print(f"UMAP plot saved.")
 
             print(f"Generating spatial plot...")
-            plot_spatial(args, adata_unlabeled, filedic)
+            plot_spatial(args, adata_unlabeled, save_path=filedic, show=show)
             print(f"Spatial plot saved.\n")
     
         print("──────────────────────────────────────────")
@@ -191,17 +208,18 @@ def NovAST_evaluation(args):
             adata_all, adata_unlabeled, inverse_dict = load_exist_data_evaluation(args, filedic)
 
             print(f"Generating UMAP plot with ground truth...")
-            plot_umap(adata_all, adata_unlabeled, filedic, ground_truth=True)
+            plot_umap(adata_all, adata_unlabeled, save_path=filedic, ground_truth=True)
             print(f"UMAP plot saved.")
 
             print(f"Generating spatial plot (region key = {args.region_name_test})...")
-            plot_spatial(args, adata_unlabeled, filedic, ground_truth=True)
+            plot_spatial(args, adata_unlabeled, save_path=filedic, ground_truth=True)
             print(f"Spatial plot saved.\n")
 
         print("──────────────────────────────────────────")
         print("All seeds processed. Computing aggregated metrics...\n")
 
         metrics_df = gather_metrics(args.savedir, args.dataset, max_seed=args.rounds)
+        plot_representative(args, metrics_df, metric="accuracy")
     else:
         print("Dataset is not in evaluation mode; skipping evaluation and plotting.", flush=True)
     return metrics_df

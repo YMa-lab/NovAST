@@ -12,6 +12,8 @@ preprocess_skip: false
 # ---- obs names ----
 celltype_name_train: "cell_type"
 celltype_name_test: "cell_type"
+celltype_name_train_select: None
+celltype_name_test_select: None
 region_name_train: None
 region_name_test: None
 

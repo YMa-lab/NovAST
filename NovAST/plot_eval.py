@@ -6,6 +6,8 @@ import seaborn as sns
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+import re
+from .main_functions import load_exist_data_evaluation
 
 from sklearn.metrics import (
     adjusted_rand_score,
@@ -14,7 +16,7 @@ from sklearn.metrics import (
 )
 from .utils import color_dict, calculate_optimal_accuracy_final
 
-def plot_umap(adata_all, adata_unlabeled, save_path, ground_truth=False, colormap=None):
+def plot_umap(adata_all, adata_unlabeled, save_path=None, ground_truth=False, colormap=None, show=False):
     """
     Generate a multi-panel UMAP visualization summarizing the NovAST pipeline.
     Panels include:
@@ -114,11 +116,15 @@ def plot_umap(adata_all, adata_unlabeled, save_path, ground_truth=False, colorma
     )
 
     plt.tight_layout()
-    plt.savefig(os.path.join(save_path, f'NovAST_umap.pdf'), dpi=600, format='pdf', bbox_inches='tight')
-    plt.savefig(os.path.join(save_path, f'NovAST_umap.png'), dpi=600, bbox_inches='tight')
-    plt.show() 
+    if save_path != None:
+        plt.savefig(os.path.join(save_path, f'NovAST_umap.pdf'), dpi=600, format='pdf', bbox_inches='tight')
+        plt.savefig(os.path.join(save_path, f'NovAST_umap.png'), dpi=600, bbox_inches='tight')
+    if show:
+        plt.show()
+    else:
+        plt.close() 
 
-def plot_spatial(args, adata, save_path, region_key=None, ground_truth=False, colormap=None):
+def plot_spatial(args, adata, save_path=None, region_key=None, ground_truth=False, colormap=None, show=False):
     """
     Generate a multi-panel UMAP visualization summarizing the NovAST pipeline.
     Panels include:
@@ -129,8 +135,9 @@ def plot_spatial(args, adata, save_path, region_key=None, ground_truth=False, co
         (5) Ground-truth labels (optional; only if ground_truth=True)
         (6) Combined legend showing all cell types used across panels
     """
-    save_path = os.path.join(save_path, 'NovAST_spatial')
-    os.makedirs(save_path, exist_ok=True)
+    if save_path != None:
+        save_path = os.path.join(save_path, 'NovAST_spatial')
+        os.makedirs(save_path, exist_ok=True)
     loc_type, key = args.test_spatial_loc
     region_key = args.region_name_test
     spot_size = args.spot_size
@@ -207,8 +214,9 @@ def plot_spatial(args, adata, save_path, region_key=None, ground_truth=False, co
         cbar.ax.tick_params(labelsize=14)
 
         plt.tight_layout()
-        plt.savefig(os.path.join(save_path, f'NovAST_spatial_{title_suffix}.pdf'), dpi=600, format='pdf', bbox_inches='tight')
-        plt.savefig(os.path.join(save_path, f'NovAST_spatial_{title_suffix}.png'), dpi=600, bbox_inches='tight')
+        if save_path != None:
+            plt.savefig(os.path.join(save_path, f'NovAST_spatial_{title_suffix}.pdf'), dpi=600, format='pdf', bbox_inches='tight')
+            plt.savefig(os.path.join(save_path, f'NovAST_spatial_{title_suffix}.png'), dpi=600, bbox_inches='tight')
         if show:
             plt.show()
         else:
@@ -219,12 +227,12 @@ def plot_spatial(args, adata, save_path, region_key=None, ground_truth=False, co
         for region in adata.obs[region_key].unique():
             subset = adata[adata.obs[region_key] == region]
             if i == 0:
-                _plot(subset, spot_size, title_suffix=str(region), show=True)
+                _plot(subset, spot_size, title_suffix=str(region), show=show)
             else:
                 _plot(subset, spot_size, title_suffix=str(region))
             i += 1
     else:
-        _plot(adata, spot_size, show=True)
+        _plot(adata, spot_size, show=show)
     
 def gather_metrics(savedir, dataset, max_seed=10):
     """
@@ -276,3 +284,57 @@ def gather_metrics(savedir, dataset, max_seed=10):
     print("==============================================\n")
 
     return df
+
+def plot_representative(
+    args,
+    metrics_df,
+    metric="accuracy",
+    tie_breakers=("weighted_F1", "macro_F1", "ARI"),
+    out_subdir="Representative"
+):
+    """
+    Re-generate plots only for the best seed according to `metrics_df[metric]`.
+
+    - Picks the row with max(metric). If ties, uses tie_breakers in order.
+    - Loads the corresponding seed outputs via load_exist_data_evaluation(...)
+    - Calls plot_umap + plot_spatial with ground_truth=True
+    - Saves plots into: args.savedir / out_subdir / seed{i}
+      (without touching the original seed folder)
+
+    Returns
+    -------
+    best_seed_int : int
+    best_row      : pd.Series
+    rep_dir       : str
+    """
+    if metrics_df is None or len(metrics_df) == 0:
+        raise ValueError("metrics_df is empty; cannot select representative seed.")
+
+    if metric not in metrics_df.columns:
+        raise ValueError(f"`{metric}` not found in metrics_df columns: {list(metrics_df.columns)}")
+
+    # Build sorting keys: primary metric descending, then tie-breakers descending if exist
+    sort_cols = [metric] + [c for c in tie_breakers if c in metrics_df.columns]
+    sort_asc  = [False] * len(sort_cols)
+
+    best_row = metrics_df.sort_values(by=sort_cols, ascending=sort_asc).iloc[0]
+
+    # bread seed column
+    seed_str = str(best_row["seed"])
+    m = re.search(r"(\d+)", seed_str)
+    if m is None:
+        raise ValueError(f"Cannot parse seed number from metrics_df.seed='{seed_str}'")
+    best_seed_int = int(m.group(1))
+
+    print(f"\nBest seed = {best_seed_int} | "
+          + " | ".join([f"{c}={float(best_row[c]):.4f}" for c in sort_cols if c in best_row.index]))
+
+    # Use the original seed directory to load files,
+    seed_dir = os.path.join(args.savedir, f"seed{best_seed_int}")
+
+    # Load saved evaluation outputs for this seed
+    adata_all, adata_unlabeled, inverse_dict = load_exist_data_evaluation(args, seed_dir)
+    plot_umap(adata_all, adata_unlabeled, ground_truth=True, show=True)
+    plot_spatial(args, adata_unlabeled, ground_truth=True, show=True)
+
+    return best_seed_int, best_row

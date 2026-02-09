@@ -29,7 +29,7 @@ training_mode = "exploration"
 # Column name in the reference AnnData that stores cell-type annotations
 celltype_name_train = "cell_type"
 name = "demo_exploration"
-dataset = "Xenium_IPF_lung"
+dataset = "dataset_name"
 ```
 
 All remaining hyperparameters are defined in the file **`default_config.yaml`**.  

@@ -12,26 +12,26 @@ from .train import NovAST_train
 from .datasets import *
 from .utils import *
 
-def load_paired_dataset(adata_train, adata_test, args):
+def load_paired_dataset(adata_reference, adata_target, args):
     # load datasets
-    outputs = load_dataset_adata(args, adata_train, adata_test)
-    (labeled_X, labeled_y, inverse_dict_train, unlabeled_X, unlabeled_y, unlabeled_y_c, inverse_dict_test, adata_train, adata_test) = outputs
+    outputs = load_dataset_adata(args, adata_reference, adata_target)
+    (labeled_X, labeled_y, inverse_dict_reference, unlabeled_X, unlabeled_y, unlabeled_y_c, inverse_dict_target, adata_reference, adata_target) = outputs
     dataset = Dataset(labeled_X, labeled_y, unlabeled_X, unlabeled_y_c)
     
-    with open(os.path.join(args.savedir, 'inverse_dict_train.pkl'), 'wb') as f:
-        pickle.dump(inverse_dict_train, f)
+    with open(os.path.join(args.savedir, 'inverse_dict_reference.pkl'), 'wb') as f:
+        pickle.dump(inverse_dict_reference, f)
 
     if args.uncontrolled == False:
-        with open(os.path.join(args.savedir, 'inverse_dict_test.pkl'), 'wb') as f:
-            pickle.dump(inverse_dict_test, f)
+        with open(os.path.join(args.savedir, 'inverse_dict_target.pkl'), 'wb') as f:
+            pickle.dump(inverse_dict_target, f)
 
-    return dataset, labeled_y, unlabeled_y, unlabeled_X, adata_train, adata_test
+    return dataset, labeled_y, unlabeled_y, unlabeled_X, adata_reference, adata_target
 
 def training_model(seed, args, dataset, labeled_y, unlabeled_y, filepath):
     start_time = time.time()
     print(f"Part I training started! Round {seed}")
     novaset = NovAST_train(args, dataset, filepath)
-    z_train, z_test, total_losses, recons_losses, sim_losses, mmf_losses, model_cpu = novaset.train()
+    z_reference, z_target, total_losses, recons_losses, sim_losses, mmf_losses, model_cpu = novaset.train()
     torch.save(model_cpu, os.path.join(filepath, 'model.pth'))
     
     np.savetxt(os.path.join(filepath, 'total_losses.csv'), total_losses, delimiter=",")
@@ -42,21 +42,21 @@ def training_model(seed, args, dataset, labeled_y, unlabeled_y, filepath):
     print("Part I training done",flush=True)
     print("--- %s seconds ---" % (time.time() - start_time),flush=True)
 
-    return labeled_y, z_train, unlabeled_y, z_test
+    return labeled_y, z_reference, unlabeled_y, z_target
 
-def identify_novel_cells_evaluation(labeled_y, z_train, unlabeled_y, z_test, args, filepath, adata_train, adata_test):
+def identify_novel_cells_evaluation(labeled_y, z_reference, unlabeled_y, z_target, args, filepath, adata_reference, adata_target):
     start_time = time.time()
     print("Step2 started!", flush=True)
 
     # get combined latent space, transform it to an anndata, and add feautres (i.e., labled or not)
     adata_all = sc.concat(
-        [adata_train, adata_test],
+        [adata_reference, adata_target],
         join="outer",            # keep all obs columns (safe)
         axis=0,                  # stack rows (cells)
         label=None,              # no batch label added automatically
         index_unique=None        # keep original indices
     )
-    z_all = np.concatenate((z_train, z_test), axis=0)
+    z_all = np.concatenate((z_reference, z_target), axis=0)
     unlabeled_y_modified = np.full(unlabeled_y.shape, -1) 
     y_all = np.concatenate((labeled_y, unlabeled_y_modified))
     adata_all.obsm['X_latent'] = z_all
@@ -94,16 +94,16 @@ def identify_novel_cells_evaluation(labeled_y, z_train, unlabeled_y, z_test, arg
     print("Labelspreading takes %s seconds" % (time.time() - start_time2),flush=True)
 
     # add labels to adata
-    with open(os.path.join(args.savedir, 'inverse_dict_train.pkl'), 'rb') as f:
+    with open(os.path.join(args.savedir, 'inverse_dict_reference.pkl'), 'rb') as f:
         inverse_dict = pickle.load(f)
-    with open(os.path.join(args.savedir, 'inverse_dict_test.pkl'), 'rb') as f:
-        inverse_dict_test = pickle.load(f)
+    with open(os.path.join(args.savedir, 'inverse_dict_target.pkl'), 'rb') as f:
+        inverse_dict_target = pickle.load(f)
     unlabeled_y_name = unlabeled_y.astype('object')
     for i in range(len(unlabeled_y_name)):
-        if unlabeled_y_name[i] in inverse_dict_test.keys():
-            unlabeled_y_name[i] = inverse_dict_test[unlabeled_y_name[i]]
-    shared_list = set(inverse_dict.values()).intersection(inverse_dict_test.values())
-    unique_list = set(inverse_dict_test.values()) - shared_list
+        if unlabeled_y_name[i] in inverse_dict_target.keys():
+            unlabeled_y_name[i] = inverse_dict_target[unlabeled_y_name[i]]
+    shared_list = set(inverse_dict.values()).intersection(inverse_dict_target.values())
+    unique_list = set(inverse_dict_target.values()) - shared_list
     labeled_y_name = labeled_y.astype('object')
     for i in range(len(labeled_y_name)):
         if labeled_y_name[i] in inverse_dict.keys():
@@ -179,28 +179,28 @@ def identify_novel_cells_evaluation(labeled_y, z_train, unlabeled_y, z_test, arg
     print("Part II training done",flush=True)
     print("--- %s seconds ---" % (time.time() - start_time),flush=True)
 
-    return adata_all, adata_unlabeled, predicted_labels_target, labeled_y, z_test, unlabeled_y_name, inverse_dict
+    return adata_all, adata_unlabeled, predicted_labels_target, labeled_y, z_target, unlabeled_y_name, inverse_dict
 
 def load_exist_data_evaluation(args, filepath):
     adata_all = sc.read_h5ad(os.path.join(filepath, 'adata_all_end_of_labelspreading.h5ad'))
     adata_unlabeled = sc.read_h5ad(os.path.join(filepath, 'adata_unlabeled_final.h5ad'))
-    with open(os.path.join(args.savedir, 'inverse_dict_train.pkl'), 'rb') as f:
+    with open(os.path.join(args.savedir, 'inverse_dict_reference.pkl'), 'rb') as f:
         inverse_dict = pickle.load(f)
     return adata_all, adata_unlabeled, inverse_dict
 
 
-def identify_novel_cells_exploration(labeled_y, z_train, unlabeled_y, z_test, args, filepath, adata_train, adata_test):
+def identify_novel_cells_exploration(labeled_y, z_reference, unlabeled_y, z_target, args, filepath, adata_reference, adata_target):
     start_time = time.time()
     print("Step2 started!")
     # get combined latent space, transform it to an anndata, and add feautres (i.e., labled or not)
     adata_all = sc.concat(
-        [adata_train, adata_test],
+        [adata_reference, adata_target],
         join="outer",            # keep all obs columns (safe)
         axis=0,                  # stack rows (cells)
         label=None,              # no batch label added automatically
         index_unique=None        # keep original indices
     )
-    z_all = np.concatenate((z_train, z_test), axis=0)
+    z_all = np.concatenate((z_reference, z_target), axis=0)
     unlabeled_y_modified = np.full(unlabeled_y.shape, -1)
     unlabeled_y_modified = unlabeled_y_modified.squeeze()
     unlabeled_y = unlabeled_y.squeeze()
@@ -226,7 +226,7 @@ def identify_novel_cells_exploration(labeled_y, z_train, unlabeled_y, z_test, ar
     print("Labelspreading takes %s seconds" % (time.time() - start_time2),flush=True)
 
     # add labels to adata
-    with open(os.path.join(args.savedir, 'inverse_dict_train.pkl'), 'rb') as f:
+    with open(os.path.join(args.savedir, 'inverse_dict_reference.pkl'), 'rb') as f:
         inverse_dict = pickle.load(f)
     shared_list = set(inverse_dict.values())
     labeled_y_name = labeled_y.astype('object')
@@ -299,7 +299,7 @@ def identify_novel_cells_exploration(labeled_y, z_train, unlabeled_y, z_test, ar
     print("Part II training done",flush=True)
     print("--- %s seconds ---" % (time.time() - start_time),flush=True)
 
-    return adata_all, adata_unlabeled, predicted_labels_target, labeled_y, z_test, inverse_dict
+    return adata_all, adata_unlabeled, predicted_labels_target, labeled_y, z_target, inverse_dict
 
 def load_exist_data_exploration(args, filepath):
     adata_all = sc.read_h5ad(os.path.join(filepath, 'adata_all_end_of_labelspreading.h5ad'))

@@ -3,19 +3,19 @@ savedir: "./"
 name: "run"
 training_mode: "exploration"
 dataset: null
-dataset_train: "train"
-dataset_test: "test"
-train_path: null
-test_path: null
+dataset_reference: "train"
+dataset_target: "test"
+reference_path: null
+target_path: null
 preprocess_skip: false
 
 # ---- obs names ----
-celltype_name_train: "cell_type"
-celltype_name_test: "cell_type"
-celltype_name_train_select: None
-celltype_name_test_select: None
-region_name_train: None
-region_name_test: None
+celltype_name_reference: "cell_type"
+celltype_name_target: "cell_type"
+celltype_name_reference_select: None
+celltype_name_target_select: None
+region_name_reference: None
+region_name_target: None
 
 # ---- dataset control ----
 remove_celltype: false

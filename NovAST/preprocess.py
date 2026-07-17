@@ -20,51 +20,51 @@ def normalize_log_scale(adata, target_sum, int_tol=1e-6):
     # always scale (zero_center, no clipping)
     sc.pp.scale(adata, zero_center=True, max_value=None, copy=False)
 
-def preprocess(adata_train, adata_test, filedic_train, filedic_test, hvg=None, target_sum=1e4):
+def preprocess(adata_reference, adata_target, filedic_reference, filedic_target, hvg=None, target_sum=1e4):
     """
     If preprocessed files already exist, load and return them.
     Otherwise, perform preprocessing, save to new files, and return the subsets.
     """
     # Construct output paths
-    output_path_train = filedic_train.replace(".h5ad", "_full_preprocess.h5ad")
-    output_path_test = filedic_test.replace(".h5ad", "_full_preprocess.h5ad")
+    output_path_reference = filedic_reference.replace(".h5ad", "_full_preprocess.h5ad")
+    output_path_target = filedic_target.replace(".h5ad", "_full_preprocess.h5ad")
 
     # Only keep the overlapp gene 
-    genes_train = set(adata_train.var_names)
-    genes_test = set(adata_test.var_names)
-    overlapping_genes = genes_train.intersection(genes_test)
+    genes_reference = set(adata_reference.var_names)
+    genes_target = set(adata_target.var_names)
+    overlapping_genes = genes_reference.intersection(genes_target)
     print(f'Number of overlapped genes: {len(overlapping_genes)}')
-    adata_train_subset = adata_train[:, adata_train.var_names.isin(overlapping_genes)]
-    adata_test_subset = adata_test[:, adata_test.var_names.isin(overlapping_genes)]
+    adata_reference_subset = adata_reference[:, adata_reference.var_names.isin(overlapping_genes)]
+    adata_target_subset = adata_target[:, adata_target.var_names.isin(overlapping_genes)]
 
     if hvg:
         # select hvg for each dataset separately then take the intersect
-        sc.pp.highly_variable_genes(adata_train_subset, flavor='seurat_v3', n_top_genes=int(hvg))
-        sc.pp.highly_variable_genes(adata_test_subset, flavor='seurat_v3', n_top_genes=int(hvg))
-        hvg_list_train = np.array(adata_train_subset.var[adata_train_subset.var['highly_variable']].index.tolist())
-        hvg_list_test = np.array(adata_test_subset.var[adata_test_subset.var['highly_variable']].index.tolist())
-        hvg_intersect = np.intersect1d(hvg_list_train, hvg_list_test)
+        sc.pp.highly_variable_genes(adata_reference_subset, flavor='seurat_v3', n_top_genes=int(hvg))
+        sc.pp.highly_variable_genes(adata_target_subset, flavor='seurat_v3', n_top_genes=int(hvg))
+        hvg_list_reference = np.array(adata_reference_subset.var[adata_reference_subset.var['highly_variable']].index.tolist())
+        hvg_list_target = np.array(adata_target_subset.var[adata_target_subset.var['highly_variable']].index.tolist())
+        hvg_intersect = np.intersect1d(hvg_list_reference, hvg_list_target)
         print(f"Top {hvg} highly variable genes have been selected!", flush=True)
         print(f"Number of genes inversect is {len(hvg_intersect)}", flush=True)
 
     # Preserve raw counts in a dedicated layer
-    adata_train_subset.layers["counts"] = adata_train_subset.X.copy()
-    adata_test_subset.layers["counts"]  = adata_test_subset.X.copy()
+    adata_reference_subset.layers["counts"] = adata_reference_subset.X.copy()
+    adata_target_subset.layers["counts"]  = adata_target_subset.X.copy()
     
     # normalize
-    normalize_log_scale(adata_train_subset, target_sum=target_sum)
-    normalize_log_scale(adata_test_subset,  target_sum=target_sum)
+    normalize_log_scale(adata_reference_subset, target_sum=target_sum)
+    normalize_log_scale(adata_target_subset,  target_sum=target_sum)
 
     # then subset again if hvg selected
     if hvg: 
-        adata_train_subset = adata_train_subset[:, adata_train_subset.var_names.isin(hvg_intersect)]
-        adata_test_subset = adata_test_subset[:, adata_test_subset.var_names.isin(hvg_intersect)] 
+        adata_reference_subset = adata_reference_subset[:, adata_reference_subset.var_names.isin(hvg_intersect)]
+        adata_target_subset = adata_target_subset[:, adata_target_subset.var_names.isin(hvg_intersect)] 
 
-    adata_train_subset.layers["normalized"] = adata_train_subset.X.copy()
-    adata_test_subset.layers["normalized"]  = adata_test_subset.X.copy()
+    adata_reference_subset.layers["normalized"] = adata_reference_subset.X.copy()
+    adata_target_subset.layers["normalized"]  = adata_target_subset.X.copy()
     
     # save the dataset
-    adata_train_subset.write_h5ad(output_path_train)
-    adata_test_subset.write_h5ad(output_path_test)
+    adata_reference_subset.write_h5ad(output_path_reference)
+    adata_target_subset.write_h5ad(output_path_target)
 
-    return adata_train_subset, adata_test_subset
+    return adata_reference_subset, adata_target_subset

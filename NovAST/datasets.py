@@ -9,7 +9,7 @@ from .utils import *
 
 def select_cell_type_to_move(remove_type, adata,celltype_name="cell_type"):
     """
-    Decide which cell‐type(s) to drop from TRAIN based on TEST:
+    Decide which cell‐type(s) to drop from the Reference based on the Target:
     
     - 'most' / 'least': by raw frequency
     - 'closest' / 'furthest': by average UMAP‐centroid distance
@@ -52,15 +52,15 @@ def select_cell_type_to_move(remove_type, adata,celltype_name="cell_type"):
 
     return []
 
-def read_dataset(data_type=None, train_path=None, test_path=None):
+def read_dataset(data_type=None, reference_path=None, target_path=None):
     """
     Load an AnnData dataset (.h5ad) based on whether 'train' or 'test' data is requested.
     """
     # Determine which file path to use based on data_type
-    if data_type == 'train' and train_path:
-        file_path = train_path
-    elif data_type == 'test' and test_path:
-        file_path = test_path
+    if data_type == 'reference' and reference_path:
+        file_path = reference_path
+    elif data_type == 'target' and target_path:
+        file_path = target_path
     else:
         # Neither a valid type nor a corresponding path was provided
         raise ValueError("You must provide a valid train/test path.")
@@ -69,7 +69,7 @@ def read_dataset(data_type=None, train_path=None, test_path=None):
     adata = sc.read_h5ad(file_path)
     return adata
 
-def load_dataset_adata(args, adata_train, adata_test):
+def load_dataset_adata(args, adata_reference, adata_target):
     """
     Unified loader that handles:
       - controlled vs. uncontrolled (`args.uncontrolled`)
@@ -77,89 +77,89 @@ def load_dataset_adata(args, adata_train, adata_test):
       - removing specified cell‐types (`args.remove_celltype`, `args.remove_celltype_type`)
       - subsampling cells (`args.sampling_cells`)
       - selecting a subset of regions (`args.select`)
-      - building a kNN graph if requested (`args.graph`, `args.region_name_train/test`, `args.k`)
+      - building a kNN graph if requested (`args.graph`, `args.region_name_reference/test`, `args.k`)
     """
 
-    adata_train.obs[args.celltype_name_train] = adata_train.obs[args.celltype_name_train].str.lower()
+    adata_reference.obs[args.celltype_name_reference] = adata_reference.obs[args.celltype_name_reference].str.lower()
     if not args.no_gt:
-        adata_test.obs[args.celltype_name_test]   = adata_test.obs[args.celltype_name_test].str.lower()
+        adata_target.obs[args.celltype_name_target]   = adata_target.obs[args.celltype_name_target].str.lower()
 
-    # If “controlled,” remove “novel” cell‐types from TEST (and maybe TRAIN). ---
+    # If “controlled,” remove “novel” cell‐types from Target (and maybe Reference). ---
     if not args.uncontrolled:
-        train_cts = set(adata_train.obs[args.celltype_name_train].unique())
-        test_cts  = set(adata_test.obs[args.celltype_name_test].unique())
+        reference_cts = set(adata_reference.obs[args.celltype_name_reference].unique())
+        target_cts  = set(adata_target.obs[args.celltype_name_target].unique())
 
-        # Drop any TEST cells whose label ∉ (train_cts ∩ test_cts)
-        common_cts = train_cts & test_cts
-        drop_from_test = test_cts - common_cts
-        if drop_from_test:
-            adata_test = adata_test[
-                ~adata_test.obs[args.celltype_name_test].isin(drop_from_test)
+        # Drop any Target cells whose label ∉ (reference_cts ∩ target_cts)
+        common_cts = reference_cts & target_cts
+        drop_from_target = target_cts - common_cts
+        if drop_from_target:
+            adata_target = adata_target[
+                ~adata_target.obs[args.celltype_name_target].isin(drop_from_target)
             ].copy()
 
-        # If rm_ref=True, also drop TRAIN cells whose label ∉ common_cts
+        # If rm_ref=True, also drop Reference cells whose label ∉ common_cts
         if args.rm_ref:
-            drop_from_train = train_cts - common_cts
-            if drop_from_train:
-                adata_train = adata_train[
-                    ~adata_train.obs[args.celltype_name_train].isin(drop_from_train)
+            drop_from_reference = reference_cts - common_cts
+            if drop_from_reference:
+                adata_reference = adata_reference[
+                    ~adata_reference.obs[args.celltype_name_reference].isin(drop_from_reference)
                 ].copy()
 
-    # If remove_celltype=True, remove selected labels from TRAIN only ---
+    # If remove_celltype=True, remove selected labels from the Reference only ---
     if args.remove_celltype:
-        to_move = select_cell_type_to_move(args.remove_celltype_type, adata_test, args.celltype_name_test_select)
+        to_move = select_cell_type_to_move(args.remove_celltype_type, adata_target, args.celltype_name_target_select)
 
-        adata_train = adata_train[
-            ~adata_train.obs[args.celltype_name_train_select].isin(to_move)
+        adata_reference = adata_reference[
+            ~adata_reference.obs[args.celltype_name_reference_select].isin(to_move)
         ].copy()
-        print("Removed from TRAIN:", to_move)
+        print("Removed from the Reference:", to_move)
 
-    # If sampling_cells is set, subsample TRAIN in proportion to TEST size ---
+    # If sampling_cells is set, subsample the Reference in proportion to Target size ---
     if args.sampling_cells is not None:
-        down_size = int(args.sampling_cells * adata_test.shape[0])
-        comp = adata_train.obs[args.celltype_name_train].value_counts(normalize=True)
+        down_size = int(args.sampling_cells * adata_target.shape[0])
+        comp = adata_reference.obs[args.celltype_name_reference].value_counts(normalize=True)
         downsampled_idx = []
         for ct, prop in comp.items():
             n_samples = int(prop * down_size)
-            idxs = adata_train.obs[
-                adata_train.obs[args.celltype_name_train] == ct
+            idxs = adata_reference.obs[
+                adata_reference.obs[args.celltype_name_reference] == ct
             ].index
             chosen = np.random.RandomState(1).choice(idxs, size=n_samples, replace=False)
             downsampled_idx.extend(chosen)
-        adata_train = adata_train[downsampled_idx].copy()
+        adata_reference = adata_reference[downsampled_idx].copy()
 
-    # Extract train_X, train_y, inverse_train
-    train_X       = adata_train.X
-    train_y_raw   = adata_train.obs[args.celltype_name_train]
-    train_classes = np.sort(train_y_raw.unique()).tolist()
-    train_map     = {ct: i for i, ct in enumerate(train_classes)}
-    inverse_train = {i: ct for ct, i in train_map.items()}
-    train_y       = np.array([train_map[ct] for ct in train_y_raw])
+    # Extract reference_X, reference_y, inverse_reference
+    reference_X       = adata_reference.X
+    reference_y_raw   = adata_reference.obs[args.celltype_name_reference]
+    reference_classes = np.sort(reference_y_raw.unique()).tolist()
+    reference_map     = {ct: i for i, ct in enumerate(reference_classes)}
+    inverse_reference = {i: ct for ct, i in reference_map.items()}
+    reference_y       = np.array([reference_map[ct] for ct in reference_y_raw])
 
-    # --- Step 6: Extract test_X, test_y, inverse_test
-    test_X = adata_test.X
+    # --- Step 6: Extract target_X, target_y, inverse_target
+    target_X = adata_target.X
 
     if args.no_gt:
         # return empty as no ground truth provided
-        n_test = test_X.shape[0]
-        test_y   = np.zeros((n_test,), dtype=int)
-        test_y_c = np.zeros((n_test,), dtype=float)
-        test_y_raw  = np.zeros((n_test,), dtype=str)
-        inverse_test = None
+        n_target = target_X.shape[0]
+        target_y   = np.zeros((n_target,), dtype=int)
+        target_y_c = np.zeros((n_target,), dtype=float)
+        target_y_raw  = np.zeros((n_target,), dtype=str)
+        inverse_target = None
     else:
-        test_y_raw   = adata_test.obs[args.celltype_name_test]
-        test_classes = np.sort(test_y_raw.unique()).tolist()
-        test_map     = {ct: i for i, ct in enumerate(test_classes)}
-        inverse_test = {i: ct for ct, i in test_map.items()}
-        test_y       = np.array([test_map[ct] for ct in test_y_raw])
-        test_y_c     = np.array([test_map[ct] for ct in test_y_raw])
-        test_y_raw   = test_y_raw.values
+        target_y_raw   = adata_target.obs[args.celltype_name_target]
+        target_classes = np.sort(target_y_raw.unique()).tolist()
+        target_map     = {ct: i for i, ct in enumerate(target_classes)}
+        inverse_target = {i: ct for ct, i in target_map.items()}
+        target_y       = np.array([target_map[ct] for ct in target_y_raw])
+        target_y_c     = np.array([target_map[ct] for ct in target_y_raw])
+        target_y_raw   = target_y_raw.values
 
-    if hasattr(train_X, 'toarray'):
-        train_X = train_X.toarray()
-    if hasattr(test_X, 'toarray'):
-        test_X  = test_X.toarray()
-    return (train_X, train_y, inverse_train, test_X, test_y_raw, test_y_c, inverse_test, adata_train, adata_test)
+    if hasattr(reference_X, 'toarray'):
+        reference_X = reference_X.toarray()
+    if hasattr(target_X, 'toarray'):
+        target_X  = target_X.toarray()
+    return (reference_X, reference_y, inverse_reference, target_X, target_y_raw, target_y_c, inverse_target, adata_reference, adata_target)
 
 class NGDataset(Dataset):
     def __init__(self, x, y):

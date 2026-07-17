@@ -130,11 +130,11 @@ class NovAST_train:
         
         labeled_data, unlabeled_data = self.dataset.labeled_data, self.dataset.unlabeled_data
         pred_fn = self.pred
-        _,z_train = pred_fn(labeled_data)
-        _,z_test = pred_fn(unlabeled_data)
+        _,z_reference = pred_fn(labeled_data)
+        _,z_target = pred_fn(unlabeled_data)
         
         model_cpu = self.model.to('cpu')
         self.logger.info("Training finished.")
         self.logger.info(f"Saved log at: {self.log_path}")
         
-        return [z_train, z_test, total_losses, recons_losses, sim_losses, mmf_losses, model_cpu]
+        return [z_reference, z_target, total_losses, recons_losses, sim_losses, mmf_losses, model_cpu]

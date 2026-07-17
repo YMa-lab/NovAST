@@ -138,8 +138,8 @@ def plot_spatial(args, adata, save_path=None, region_key=None, ground_truth=Fals
     if save_path != None:
         save_path = os.path.join(save_path, 'NovAST_spatial')
         os.makedirs(save_path, exist_ok=True)
-    loc_type, key = args.test_spatial_loc
-    region_key = args.region_name_test
+    loc_type, key = args.target_spatial_loc
+    region_key = args.region_name_target
     spot_size = args.spot_size
     
 
@@ -239,7 +239,7 @@ def gather_metrics(savedir, dataset, max_seed=10):
     Compute evaluation metrics (accuracy, weighted F1, ARI, macro F1)
     across multiple seeds for a given dataset.
     """
-    with open(os.path.join(savedir, "inverse_dict_train.pkl"), "rb") as f:
+    with open(os.path.join(savedir, "inverse_dict_reference.pkl"), "rb") as f:
         inverse_dict = pickle.load(f)
 
     total_accuracy    = {}
